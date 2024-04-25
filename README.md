@@ -6,6 +6,6 @@ For more information about the server, check it out [here](https://github.com/Te
 
 ## Dev Environment
 
-- OpenJDK 11
+- OpenJDK 21
 - Android Studio Iguana
   - Minimum SDK ⇒ API 24: Android 7.0 (Nougat)
