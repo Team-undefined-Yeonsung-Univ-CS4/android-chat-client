@@ -5,6 +5,7 @@
     <string name="login">로그인</string>
     <string name="need_account">계정이 필요한가요?</string>
     <string name="sign_up">가입하기</string>
+    <string name="sign_out">로그아웃</string>
     <string name="create_account">회원 가입</string>
     <string name="input_account_info">회원 가입 정보를 입력해주세요</string>
     <string name="name">이름</string>
