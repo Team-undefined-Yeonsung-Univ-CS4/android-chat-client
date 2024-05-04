@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/iv_manager_profile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/ic_user"
+        android:contentDescription="@string/user_profile_image" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="7"
+        android:layout_marginHorizontal="20dp"
+        android:gravity="center_vertical"
+        android:text="title"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tv_members"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="1/8"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/iv_public"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".7"
+        android:layout_marginTop="4dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_lock_gray"
+        android:contentDescription="@string/privated" />
+
+</LinearLayout>

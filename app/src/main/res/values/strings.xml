@@ -14,4 +14,11 @@
     <string name="password">비밀번호</string>
     <string name="birthday">생년월일</string>
     <string name="input_birthday">생년월일을 입력해주세요</string>
+    <string name="lobby">대기실</string>
+    <string name="online">온라인</string>
+    <string name="concurrent_connectors">동시 접속자</string>
+    <string name="searching_room">방찾기</string>
+    <string name="creating_room">방만들기</string>
+    <string name="user_profile_image">사용자 프로필 이미지</string>
+    <string name="privated">비공개</string>
 </resources>

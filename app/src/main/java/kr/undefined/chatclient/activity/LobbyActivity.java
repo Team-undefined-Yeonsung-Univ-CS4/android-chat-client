@@ -2,51 +2,101 @@ package kr.undefined.chatclient.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
+
 import kr.undefined.chatclient.R;
+import kr.undefined.chatclient.adapter.RoomListAdapter;
+import kr.undefined.chatclient.item.RoomListItem;
 
 public class LobbyActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseUser user;
 
-    TextView tvUserId;
-    Button btnSignOut;
+    Toolbar toolbar;
+    RecyclerView rvRoomList;
+    TextView tvConcurrentConnectors, tvUserNickname;
+    ImageButton btnUserProfileImg;
+    FrameLayout btnSearchingRoom, btnCreatingRoom;
     Intent it;
+
+    private RoomListAdapter roomListAdapter;
+    private ArrayList<RoomListItem> roomList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
 
+        // 로그인 상태 확인
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-
-        tvUserId = findViewById(R.id.tv_user_id);
-        btnSignOut = findViewById(R.id.btn_sign_out);
-
         if (user == null) {
             it = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(it);
             finish();
         }
 
-        // TODO: 아래는 로그인한 사용자 ID 값에 접근하는 방법 및 로그아웃에 대한 테스트 코드이므로
-        //   구현 시에 참고만 하시고 적절하게 수정해주세요.
+        toolbar = findViewById(R.id.toolbar);
+        rvRoomList = findViewById(R.id.rv_room_list);
+        tvConcurrentConnectors = findViewById(R.id.tv_concurrent_connectors_value);
+        tvUserNickname = findViewById(R.id.tv_user_nickname);
+        btnUserProfileImg = findViewById(R.id.ib_user_profile);
+        btnSearchingRoom = findViewById(R.id.btn_searching_room);
+        btnCreatingRoom = findViewById(R.id.btn_creating_room);
 
-        tvUserId.setText(user.getEmail());
+        rvRoomList.setLayoutManager(new LinearLayoutManager(this));
+        /******************************** 테스트용 더미 코드 ********************************/
+        roomList.add(new RoomListItem("제 귀여운 재귀함수좀 보실래요", "1/3"));
+        roomList.add(new RoomListItem("싱글이라 싱글톤 패턴만 씁니다", "2/2"));
+        roomList.add(new RoomListItem("전 html로 프로그래밍 해요", "7/8"));
+        roomList.add(new RoomListItem("챗지피티 주도 개발", "1/8"));
+        roomList.add(new RoomListItem("TDD는 죽었다", "2/8"));
+        roomList.add(new RoomListItem("님들 여기 뭐하는데임", "2/4"));
+        roomList.add(new RoomListItem("졸업하면 컴퓨터 파시는거죠?", "2/4"));
+        /**********************************************************************************/
+        roomListAdapter = new RoomListAdapter(roomList);
+        rvRoomList.setAdapter(roomListAdapter);
 
-        btnSignOut.setOnClickListener(view -> {
-            FirebaseAuth.getInstance().signOut();
-            it = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(it);
-            finish();
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_chevron);
+
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
+
+        // TODO: 동시 접속자 수 표시 (실시간 업데이트 반영)
+        tvConcurrentConnectors.setText("10"); // 테스트용 더미코드
+
+        roomListAdapter.setOnItemClickListener(item -> {
+            // TODO: 방 입장 프로세스 다이얼로그 생성
+        });
+
+        // TODO: 사용자 닉네임 할당 (기본 값은 이메일 부분이 제외된 ID)
+        tvUserNickname.setText(user.getEmail());
+
+        btnUserProfileImg.setOnClickListener(view -> {
+            // TODO: 마이 페이지로 이동
+        });
+
+        btnSearchingRoom.setOnClickListener(view -> {
+            // TODO: 방 찾기 다이얼로그 생성
+        });
+
+        btnCreatingRoom.setOnClickListener(view -> {
+            // TODO: 방 만들기 다이얼로그 생성
         });
     }
 }
+

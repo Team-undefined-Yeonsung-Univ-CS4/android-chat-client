@@ -1,29 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activity.LobbyActivity">
 
-    <TextView
-        android:id="@+id/tv_user_id"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/btn_sign_out"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/lobby"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/sign_out"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/online"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toStartOf="@+id/tv_concurrent_connectors"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.53"
+        app:srcCompat="@drawable/ic_circle_green" />
+
+    <TextView
+        android:id="@+id/tv_concurrent_connectors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="42dp"
+        android:text="@string/concurrent_connectors"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar"
+        app:layout_constraintTop_toTopOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.511" />
+
+    <TextView
+        android:id="@+id/tv_concurrent_connectors_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_concurrent_connectors"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toEndOf="@+id/tv_concurrent_connectors"
+        app:layout_constraintTop_toTopOf="@+id/tv_concurrent_connectors"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_room_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingVertical="40dp"
+        android:paddingHorizontal="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_user_id"
-        app:layout_constraintVertical_bias="0.379" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <LinearLayout
+        android:id="@+id/bottomNavBar"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:background="?attr/colorPrimary"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/ib_user_profile"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="17dp"
+        android:background="@drawable/ic_user"
+        android:contentDescription="@string/user_profile_image"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomNavBar"
+        app:layout_constraintStart_toStartOf="@+id/bottomNavBar"
+        app:layout_constraintTop_toTopOf="@+id/bottomNavBar"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <TextView
+        android:id="@+id/tv_user_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:textSize="19sp"
+        android:textColor="@color/white"
+        android:maxLength="10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ib_user_profile"
+        app:layout_constraintTop_toTopOf="@+id/bottomNavBar" />
+
+    <FrameLayout
+        android:id="@+id/btn_searching_room"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomNavBar"
+        app:layout_constraintEnd_toStartOf="@+id/btn_creating_room"
+        app:layout_constraintTop_toTopOf="@+id/bottomNavBar">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center"
+            android:clickable="false"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/searching_room"
+            app:srcCompat="@drawable/ic_search_30" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="30dp"
+            android:text="@string/searching_room"
+            android:textSize="16sp"
+            android:textColor="@color/white" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/btn_creating_room"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomNavBar"
+        app:layout_constraintEnd_toEndOf="@+id/bottomNavBar"
+        app:layout_constraintTop_toTopOf="@+id/bottomNavBar">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center"
+            android:clickable="false"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/creating_room"
+            app:srcCompat="@drawable/ic_add_circle_30" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="30dp"
+            android:text="@string/creating_room"
+            android:textSize="16sp"
+            android:textColor="@color/white" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
