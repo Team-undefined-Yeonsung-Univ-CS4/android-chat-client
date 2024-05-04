@@ -21,32 +21,39 @@ import kr.undefined.chatclient.adapter.RoomListAdapter;
 import kr.undefined.chatclient.item.RoomListItem;
 
 public class LobbyActivity extends AppCompatActivity {
-    FirebaseAuth auth;
-    FirebaseUser user;
+    private FirebaseAuth auth;
+    private FirebaseUser currentUser;
 
     Toolbar toolbar;
     RecyclerView rvRoomList;
     TextView tvConcurrentConnectors, tvUserNickname;
     ImageButton btnUserProfileImg;
     FrameLayout btnSearchingRoom, btnCreatingRoom;
+
     Intent it;
 
     private RoomListAdapter roomListAdapter;
     private ArrayList<RoomListItem> roomList = new ArrayList<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lobby);
+    public void onStart() {
+        super.onStart();
 
-        // 로그인 상태 확인
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        if (user == null) {
+        // 활동을 초기화할 때 사용자가 현재 로그인되어 있는지 확인
+        currentUser = auth.getCurrentUser();
+        if (currentUser != null) {
             it = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(it);
             finish();
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_lobby);
+
+        auth = FirebaseAuth.getInstance();
 
         toolbar = findViewById(R.id.toolbar);
         rvRoomList = findViewById(R.id.rv_room_list);
@@ -84,7 +91,7 @@ public class LobbyActivity extends AppCompatActivity {
         });
 
         // TODO: 사용자 닉네임 할당 (기본 값은 이메일 부분이 제외된 ID)
-        tvUserNickname.setText(user.getEmail());
+        tvUserNickname.setText(currentUser.getEmail());
 
         btnUserProfileImg.setOnClickListener(view -> {
             // TODO: 마이 페이지로 이동

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,21 +26,25 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "FirebaseAuthCheck";
 
     private FirebaseAuth auth;
+    private FirebaseUser currentUser;
 
     ConstraintLayout rootLayout;
     TextInputLayout etEmailLayout, etPasswordLayout;
     TextInputEditText etEmail, etPassword;
     AppCompatButton btnLogin;
     TextView tvSignUp;
+    ProgressBar progressBar;
+
+    Intent it;
 
     @Override
     public void onStart() {
         super.onStart();
 
         // 활동을 초기화할 때 사용자가 현재 로그인되어 있는지 확인
-        FirebaseUser currentUser = auth.getCurrentUser();
+        currentUser = auth.getCurrentUser();
         if (currentUser != null) {
-             Intent it = new Intent(LoginActivity.this, LobbyActivity.class);
+             it = new Intent(getApplicationContext(), LobbyActivity.class);
              startActivity(it);
              finish();
         }
@@ -113,8 +119,10 @@ public class LoginActivity extends AppCompatActivity {
 
         if (!(email.isEmpty() || password.isEmpty())) {
             auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
-                // progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+
                 if (task.isSuccessful()) {
+                    progressBar.setVisibility(View.GONE);
                     Log.d(TAG, "signInWithEmail: success");
                     Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
 
