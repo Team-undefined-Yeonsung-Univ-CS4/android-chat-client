@@ -25,9 +25,21 @@
             android:layout_gravity="center"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:textSize="16sp" />
 
     </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/tv_numOfPeople"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="42dp"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar"
+        app:layout_constraintTop_toTopOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.511" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_chat_list"
@@ -35,22 +47,62 @@
         android:layout_height="0dp"
         android:paddingVertical="40dp"
         android:paddingHorizontal="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/chat_functions"
+        android:background="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/layout_chat_functions"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
 
     <LinearLayout
-        android:id="@+id/chat_functions"
+        android:id="@+id/layout_chat_functions"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="55dp"
         android:background="@color/white"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent" />
 
-    </LinearLayout>
+    <ImageButton
+        android:id="@+id/btn_function"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:background="@drawable/ic_add_circle_gray_36"
+        android:contentDescription="@string/function"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_chat_functions"
+        app:layout_constraintStart_toStartOf="@+id/layout_chat_functions"
+        app:layout_constraintTop_toBottomOf="@+id/rv_chat_list"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <EditText
+        android:id="@+id/et_message_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="20dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="40dp"
+        android:textSize="14sp"
+        android:maxLines="4"
+        android:hint="@string/input_message"
+        android:background="@drawable/bg_rounded_edittext"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_chat_functions"
+        app:layout_constraintEnd_toEndOf="@+id/layout_chat_functions"
+        app:layout_constraintStart_toEndOf="@+id/btn_function"
+        app:layout_constraintTop_toBottomOf="@+id/rv_chat_list" />
+
+    <ImageButton
+        android:id="@+id/btn_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:background="@drawable/ic_navigation_main_30"
+        android:contentDescription="@string/function"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_chat_functions"
+        app:layout_constraintEnd_toEndOf="@+id/et_message_input"
+        app:layout_constraintTop_toBottomOf="@+id/rv_chat_list"
+        app:layout_constraintVertical_bias="0.5" />
 
     <LinearLayout
         android:id="@+id/bottomNavBar"
@@ -60,9 +112,7 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-    </LinearLayout>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/ib_user_profile"
@@ -81,7 +131,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:textSize="19sp"
+        android:textSize="15sp"
         android:textColor="@color/white"
         android:maxLength="10"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -89,7 +139,7 @@
         app:layout_constraintTop_toTopOf="@+id/bottomNavBar" />
 
     <FrameLayout
-        android:id="@+id/btn_creating_room"
+        android:id="@+id/btn_participant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
@@ -103,16 +153,16 @@
             android:layout_gravity="top|center"
             android:clickable="false"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/creating_room"
-            app:srcCompat="@drawable/ic_add_circle_30" />
+            android:contentDescription="@string/participant"
+            app:srcCompat="@drawable/ic_person_outline_30" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginTop="30dp"
-            android:text="@string/creating_room"
-            android:textSize="16sp"
+            android:text="@string/participant"
+            android:textSize="12sp"
             android:textColor="@color/white" />
 
     </FrameLayout>

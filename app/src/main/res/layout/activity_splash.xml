@@ -5,14 +5,15 @@
     android:id="@+id/rl_splash_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".activity.SplashActivity">
 
     <!-- 검은색 동그라미를 나타내는 뷰 -->
     <View
-        android:id="@+id/v_black_circle"
+        android:id="@+id/v_main_circle"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:background="@drawable/circle_main"
+        android:background="@drawable/ic_circle_main"
         android:layout_centerInParent="true"/>
 
     <!-- 텍스트를 포함하는 레이아웃 -->

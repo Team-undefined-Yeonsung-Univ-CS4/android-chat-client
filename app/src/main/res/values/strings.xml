@@ -21,4 +21,7 @@
     <string name="creating_room">방만들기</string>
     <string name="user_profile_image">사용자 프로필 이미지</string>
     <string name="privated">비공개</string>
+    <string name="participant">참여자</string>
+    <string name="function">기능</string>
+    <string name="input_message">메시지를 입력해주세요</string>
 </resources>

@@ -57,13 +57,14 @@ public class LoginActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-        rootLayout = findViewById(R.id.login_layout);
+        rootLayout = findViewById(R.id.root_layout);
         etEmailLayout = findViewById(R.id.et_email_address_layout);
         etPasswordLayout = findViewById(R.id.et_password_layout);
         etEmail = findViewById(R.id.et_email_address);
         etPassword = findViewById(R.id.et_password);
         btnLogin = findViewById(R.id.btn_login);
         tvSignUp = findViewById(R.id.tv_sign_up);
+        progressBar = findViewById(R.id.progressBar);
 
         etEmail.addTextChangedListener(twEmail);
 
@@ -122,7 +123,6 @@ public class LoginActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
 
                 if (task.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
                     Log.d(TAG, "signInWithEmail: success");
                     Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
 
@@ -130,6 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(it);
                     finish();
                 } else {
+                    progressBar.setVisibility(View.GONE);
                     Log.w(TAG, "signInWithEmail: failure", task.getException());
                     Toast.makeText(LoginActivity.this, "계정 인증에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                 }

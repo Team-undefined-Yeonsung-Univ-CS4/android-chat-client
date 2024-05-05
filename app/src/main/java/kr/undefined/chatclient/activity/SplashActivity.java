@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseUser;
 import kr.undefined.chatclient.R;
 
 public class SplashActivity extends AppCompatActivity {
-
     FirebaseAuth auth;
     FirebaseUser user;
 
@@ -37,8 +36,8 @@ public class SplashActivity extends AppCompatActivity {
         // 애니메이션 로드
         Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale_animation);
 
-        // 검은색 동그라미 뷰 참조
-        View blackCircle = findViewById(R.id.v_black_circle);
+        // 동그라미 뷰 참조
+        View blackCircle = findViewById(R.id.v_main_circle);
 
         // 애니메이션 적용
         blackCircle.startAnimation(scaleAnimation);
@@ -57,12 +56,10 @@ public class SplashActivity extends AppCompatActivity {
             if (user == null) {
                 startActivity(new Intent(getApplication(), LoginActivity.class));
                 finish();
-            }else{
+            } else {
                 startActivity(new Intent(getApplication(), LobbyActivity.class));
                 SplashActivity.this.finish();
             }
-
-
         }
     }
 }
