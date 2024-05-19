@@ -3,7 +3,6 @@ package kr.undefined.chatclient.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -40,10 +39,9 @@ public class SplashActivity extends AppCompatActivity {
         hd.postDelayed(new SplashHandler(), 2000);
     }
 
-    private class SplashHandler implements Runnable{
+    private class SplashHandler implements Runnable {
         @Override
         public void run() {
-
             auth = FirebaseAuth.getInstance();
             user = auth.getCurrentUser();
 
