@@ -1,27 +1,24 @@
 package kr.undefined.chatclient.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.DividerItemDecoration; // DividerItemDecoration 추가
+
 import java.util.ArrayList;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.List;
+
 import kr.undefined.chatclient.R;
 import kr.undefined.chatclient.adapter.ChatRoomAdapter;
+import kr.undefined.chatclient.manager.ChatManager;
 
 public class ChatRoomActivity extends AppCompatActivity {
 
@@ -33,10 +30,16 @@ public class ChatRoomActivity extends AppCompatActivity {
     FrameLayout btnParticipant;
     ChatRoomAdapter chatAdapter;
 
+    private static ChatRoomActivity instance;
+    private static Handler uiHandler;
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_room);
+
+        instance = this;
+        uiHandler = new Handler(Looper.getMainLooper());
 
         toolbar = findViewById(R.id.toolbar);
         tvTitle = findViewById(R.id.tv_title);
@@ -56,39 +59,39 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
-        //TODO: 추후 데이터 가져오는 코드 추가
         tvTitle.setText("고독한 방");
         tvNumOfPeople.setText("1 / 8");
 
-        // RecyclerView에 대한 설정
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
         rvChatList.setLayoutManager(layoutManager);
 
-        // 채팅 메시지를 담을 리스트 생성 및 어댑터 설정
         ArrayList<String> chatMessages = new ArrayList<>();
         chatAdapter = new ChatRoomAdapter(chatMessages);
         rvChatList.setAdapter(chatAdapter);
 
-        // 전송 버튼 클릭 시 동작
         btnSend.setOnClickListener(v -> sendMessage());
 
-
+        ChatManager.getInstance(); // 인스턴스 생성 및 서버 연결
     }
 
-    // 메시지 전송 처리
     private void sendMessage() {
         String message = etMessageInput.getText().toString().trim();
         if (!message.isEmpty()) {
-            // 메시지가 비어 있지 않으면 어댑터를 통해 RecyclerView에 추가
             chatAdapter.addMessage(message);
-            etMessageInput.setText(""); // 입력 필드 초기화
-            // RecyclerView를 최하단으로 스크롤
+            etMessageInput.setText("");
             rvChatList.scrollToPosition(chatAdapter.getItemCount() - 1);
-            // TODO: 여기에 메시지를 서버로 보내는 코드를 추가
+
+            ChatManager.getInstance().sendMessage(message);
         }
     }
+
+    public static void handleMessage(String message) {
+        uiHandler.post(() -> {
+            if (instance != null) {
+                instance.chatAdapter.addMessage(message);
+                instance.rvChatList.scrollToPosition(instance.chatAdapter.getItemCount() - 1);
+            }
+        });
+    }
 }
-
-
-
