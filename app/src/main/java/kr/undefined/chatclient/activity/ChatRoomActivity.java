@@ -70,10 +70,6 @@ public class ChatRoomActivity extends AppCompatActivity {
         chatAdapter = new ChatRoomAdapter(chatMessages);
         rvChatList.setAdapter(chatAdapter);
 
-        // Divider 추가 (아이템 간의 간격 설정)
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(rvChatList.getContext(), layoutManager.getOrientation());
-        rvChatList.addItemDecoration(itemDecoration);
-
         // 전송 버튼 클릭 시 동작
         btnSend.setOnClickListener(v -> sendMessage());
 

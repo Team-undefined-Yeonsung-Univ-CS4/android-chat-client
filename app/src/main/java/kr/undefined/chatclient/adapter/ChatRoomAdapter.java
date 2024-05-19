@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.List;
+
 import java.util.ArrayList;
 import kr.undefined.chatclient.R;
 
@@ -24,7 +24,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
     // ViewHolder 생성
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // 오른쪽 텍스트 뷰 레이아웃을 inflate하여 새로운 뷰 생성
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.right_text_view, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_my_message, parent, false);
         // 새로운 ViewHolder 객체 생성
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
