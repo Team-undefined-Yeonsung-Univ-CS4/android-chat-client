@@ -7,61 +7,99 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
 import kr.undefined.chatclient.R;
+import kr.undefined.chatclient.manager.ChatMessage;
 
-public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHolder> {
+public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<String> chatList;
+    private static final int VIEW_TYPE_MY_MESSAGE = 1;
+    private static final int VIEW_TYPE_OTHER_MESSAGE = 2;
+    private ArrayList<ChatMessage> chatList;
 
-    // ChatRoomAdapter 생성자
-    public ChatRoomAdapter(ArrayList<String> chatList) {
+    public ChatRoomAdapter(ArrayList<ChatMessage> chatList) {
         this.chatList = chatList;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null && chatList.get(position).getUid().equals(user.getUid())) {
+            return VIEW_TYPE_MY_MESSAGE;
+        } else {
+            return VIEW_TYPE_OTHER_MESSAGE;
+        }
     }
 
     @NonNull
     @Override
-    // ViewHolder 생성
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // 오른쪽 텍스트 뷰 레이아웃을 inflate하여 새로운 뷰 생성
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_my_message, parent, false);
-        // 새로운 ViewHolder 객체 생성
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        if (viewType == VIEW_TYPE_MY_MESSAGE) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_my_message, parent, false);
+            return new MyMessageViewHolder(view);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_other_message, parent, false);
+            return new OtherMessageViewHolder(view);
+        }
     }
 
     @Override
-    // ViewHolder에 데이터 바인딩
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        // 해당 위치(position)의 채팅 메시지를 가져와 텍스트 뷰에 설정
-        holder.messageTextView.setText(chatList.get(position));
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        ChatMessage chatMessage = chatList.get(position);
+        String messageText = chatMessage.getMessage(); // 채팅 메시지를 가져옴
+        // 채팅 메시지를 콜론으로 분리하여 uid와 메시지를 구분
+        String[] parts = messageText.split(":", 2);
+        if (parts.length == 2) {
+            String message = parts[1]; // 메시지 부분만 추출
+            if (holder.getItemViewType() == VIEW_TYPE_MY_MESSAGE) {
+                ((MyMessageViewHolder) holder).bind(message);
+            } else {
+                ((OtherMessageViewHolder) holder).bind(message);
+            }
+        }
     }
 
+
     @Override
-    // 아이템 개수 반환
     public int getItemCount() {
         return chatList.size();
     }
 
-    // 메시지 추가
-    public void addMessage(String message) {
-        // 채팅 메시지를 리스트에 추가
+    public void addMessage(ChatMessage message) {
         chatList.add(message);
-        // 새로운 아이템이 추가되었음을 알림
         notifyItemInserted(chatList.size() - 1);
     }
 
-    // ViewHolder 클래스 정의
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        // 뷰 홀더 내의 텍스트 뷰
+    public static class MyMessageViewHolder extends RecyclerView.ViewHolder {
         TextView messageTextView;
 
-        // ViewHolder 생성자
-        public ViewHolder(@NonNull View itemView) {
+        public MyMessageViewHolder(@NonNull View itemView) {
             super(itemView);
-            // 아이템 뷰로부터 텍스트 뷰 참조
             messageTextView = itemView.findViewById(R.id.tvChat);
+        }
+
+        public void bind(String message) {
+            messageTextView.setText(message);
+        }
+
+    }
+
+    public static class OtherMessageViewHolder extends RecyclerView.ViewHolder {
+        TextView messageTextView;
+
+        public OtherMessageViewHolder(@NonNull View itemView) {
+            super(itemView);
+            messageTextView = itemView.findViewById(R.id.tvChat);
+        }
+
+        public void bind(String message) {
+            messageTextView.setText(message);
         }
     }
 }
+
 

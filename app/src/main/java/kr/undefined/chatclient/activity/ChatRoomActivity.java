@@ -14,11 +14,15 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
 
 import kr.undefined.chatclient.R;
 import kr.undefined.chatclient.adapter.ChatRoomAdapter;
 import kr.undefined.chatclient.manager.ChatManager;
+import kr.undefined.chatclient.manager.ChatMessage;
 
 public class ChatRoomActivity extends AppCompatActivity {
 
@@ -66,7 +70,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         layoutManager.setStackFromEnd(true);
         rvChatList.setLayoutManager(layoutManager);
 
-        ArrayList<String> chatMessages = new ArrayList<>();
+        ArrayList<ChatMessage> chatMessages = new ArrayList<>(); // 변경된 부분
         chatAdapter = new ChatRoomAdapter(chatMessages);
         rvChatList.setAdapter(chatAdapter);
 
@@ -76,22 +80,27 @@ public class ChatRoomActivity extends AppCompatActivity {
     }
 
     private void sendMessage() {
-        String message = etMessageInput.getText().toString().trim();
-        if (!message.isEmpty()) {
-            chatAdapter.addMessage(message);
-            etMessageInput.setText("");
-            rvChatList.scrollToPosition(chatAdapter.getItemCount() - 1);
+        String messageText = etMessageInput.getText().toString().trim();
+        if (!messageText.isEmpty()) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                String uid = user.getUid();
 
-            ChatManager.getInstance().sendMessage(message);
+                etMessageInput.setText("");
+
+                ChatManager.getInstance().sendMessage(uid + ":" + messageText);
+            }
         }
     }
 
-    public static void handleMessage(String message) {
+    public static void handleMessage(String uid, String messageText) {
         uiHandler.post(() -> {
             if (instance != null) {
+                ChatMessage message = new ChatMessage(uid, messageText);
                 instance.chatAdapter.addMessage(message);
                 instance.rvChatList.scrollToPosition(instance.chatAdapter.getItemCount() - 1);
             }
         });
     }
 }
+

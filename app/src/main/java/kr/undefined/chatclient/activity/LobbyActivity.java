@@ -46,8 +46,6 @@ public class LobbyActivity extends AppCompatActivity {
     private static final int SERVER_PORT = 9998; // 서버의 포트 번호
     private Socket socket;
 
-
-
     @Override
     public void onStart() {
         super.onStart();
@@ -75,19 +73,6 @@ public class LobbyActivity extends AppCompatActivity {
         btnUserProfileImg = findViewById(R.id.ib_user_profile);
         btnSearchingRoom = findViewById(R.id.btn_searching_room);
         btnCreatingRoom = findViewById(R.id.btn_creating_room);
-
-        // 서버와의 연결을 백그라운드 스레드에서 수행
-//        new Thread(() -> {
-//            try {
-//                socket = new Socket(SERVER_IP, SERVER_PORT);
-//
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                // 서버 연결 실패 처리
-//            }
-//        }).start();
-
 
         rvRoomList.setLayoutManager(new LinearLayoutManager(this));
         /******************************** 테스트용 더미 코드 ********************************/
@@ -135,18 +120,5 @@ public class LobbyActivity extends AppCompatActivity {
             // TODO: 방 만들기 다이얼로그 생성
         });
     }
-
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        // 액티비티가 종료될 때 서버와의 연결 해제
-//        try {
-//            if (socket != null) {
-//                socket.close();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }
 
