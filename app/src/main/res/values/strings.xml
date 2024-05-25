@@ -24,4 +24,8 @@
     <string name="participant">참여자</string>
     <string name="function">기능</string>
     <string name="input_message">메시지를 입력해주세요</string>
+    <string name="success_create_account">성공적으로 계정이 생성되었습니다</string>
+    <string name="unable_to_create_account">계정 생성에 실패하였습니다</string>
+    <string name="enter_all_info">모든 정보를 입력해주세요</string>
+    <string name="auth_mail_has_been_sent">인증 메일이 전송되었습니다</string>
 </resources>
