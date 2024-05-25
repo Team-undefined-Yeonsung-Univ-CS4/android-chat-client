@@ -66,20 +66,20 @@ public class LoginActivity extends AppCompatActivity {
         tvSignUp = findViewById(R.id.tv_sign_up);
         progressBar = findViewById(R.id.progressBar);
 
-        etEmail.addTextChangedListener(twEmail);
+        etEmail.addTextChangedListener(emailVerification);
 
         rootLayout.setOnClickListener(view -> UtilManager.clearFocus(this));
         btnLogin.setOnClickListener(view -> requestLogin());
         tvSignUp.setOnClickListener(view -> {
-            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-            startActivity(intent);
+            it = new Intent(LoginActivity.this, SignUpActivity.class);
+            startActivity(it);
         });
     }
 
     /**
      * 이메일 입력 값 실시간 검사
      */
-    private TextWatcher twEmail = new TextWatcher() {
+    private TextWatcher emailVerification = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
             String email = s.toString();
             if (email.isEmpty()) {
                 etEmailLayout.setErrorEnabled(false);
-            } else if (!isValidEmail(email)) {
+            } else if (!UtilManager.isValidEmail(email)) {
                 etEmailLayout.setErrorEnabled(true);
                 etEmailLayout.setError("이메일 형식이어야 합니다");
             } else {
@@ -101,15 +101,6 @@ public class LoginActivity extends AppCompatActivity {
         public void afterTextChanged(Editable s) {
         }
     };
-
-    /**
-     * 이메일 형식 유효성 검사
-     * @param email user email
-     * @return userId@email.com 또는 co.국가코드
-     */
-    private boolean isValidEmail(String email) {
-        return email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
-    }
 
     /**
      * Firebase Auth 로그인 요청
@@ -126,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d(TAG, "signInWithEmail: success");
                     Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
 
-                    Intent it = new Intent(LoginActivity.this, LobbyActivity.class);
+                    it = new Intent(LoginActivity.this, LobbyActivity.class);
                     startActivity(it);
                     finish();
                 } else {
