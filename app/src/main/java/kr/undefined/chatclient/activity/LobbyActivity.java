@@ -42,10 +42,6 @@ public class LobbyActivity extends AppCompatActivity {
     private RoomListAdapter roomListAdapter;
     private ArrayList<RoomListItem> roomList = new ArrayList<>();
 
-    private static final String SERVER_IP = "192.168.219.194"; // 서버의 IP 주소
-    private static final int SERVER_PORT = 9998; // 서버의 포트 번호
-    private Socket socket;
-
     @Override
     public void onStart() {
         super.onStart();
@@ -110,6 +106,13 @@ public class LobbyActivity extends AppCompatActivity {
 
         btnUserProfileImg.setOnClickListener(view -> {
             // TODO: 마이 페이지로 이동
+            
+            /********************* 임시 로그아웃 기능 **********************/
+            auth.signOut();
+            it = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(it);
+            finish();
+            /*************************************************************/
         });
 
         btnSearchingRoom.setOnClickListener(view -> {

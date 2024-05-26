@@ -168,6 +168,7 @@
         android:layout_marginHorizontal="35dp"
         android:padding="15dp"
         android:ems="10"
+        android:maxLength="8"
         android:inputType="date"
         android:hint="@string/input_birthday"
         android:textSize="14sp"

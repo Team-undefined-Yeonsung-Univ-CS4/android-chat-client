@@ -17,15 +17,23 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import kr.undefined.chatclient.R;
 import kr.undefined.chatclient.util.UtilManager;
 
 public class SignUpActivity extends AppCompatActivity {
-    private static final String TAG = "FirebaseAuthCheck";
+    private static final String AUTH = "FirebaseAuthCheck";
+    private static final String DB = "FirebaseRealtimeDatabaseCheck";
 
     private FirebaseAuth auth;
     private FirebaseUser user;
+    private FirebaseDatabase db;
+    private DatabaseReference userRef;
 
     private ConstraintLayout rootLayout;
     private Toolbar toolbar;
@@ -40,6 +48,7 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         auth = FirebaseAuth.getInstance();
+        db = FirebaseDatabase.getInstance();
 
         rootLayout = findViewById(R.id.root_layout);
         toolbar = findViewById(R.id.toolbar);
@@ -68,21 +77,37 @@ public class SignUpActivity extends AppCompatActivity {
         String password = etPassword.getText().toString();
         String birthday = etBirthday.getText().toString();
 
-        // TODO: 유저 데이터 DB insert
-
         if (!(name.isEmpty() && email.isEmpty() && password.isEmpty() && birthday.isEmpty())) {
             auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
+
+                // TODO: 인증 메일 전송 및 승인 여부 체크
+
                 if (task.isSuccessful()) {
-                    Log.d(TAG, "createUserWithEmail: success");
-                    Toast.makeText(getApplicationContext(), R.string.success_create_account, Toast.LENGTH_SHORT).show();
+                    Log.d(AUTH, "createUserWithEmail: success");
 
-                    // TODO: 인증 메일 전송 및 승인 여부 체크
+                    user = auth.getCurrentUser();
+                    userRef = db.getReference("users").child(user.getUid());
 
-                    it = new Intent(SignUpActivity.this, LoginActivity.class);
-                    startActivity(it);
-                    finish();
+                    Map<String, Object> userData = new HashMap<>();
+                    userData.put("name", name);
+                    userData.put("birthday", birthday);
+                    userData.put("email", email);
+
+                    userRef.setValue(userData).addOnCompleteListener(dbTask -> {
+                        if (dbTask.isSuccessful()) {
+                            Log.d(DB, "User data saved to database");
+                            Toast.makeText(getApplicationContext(), R.string.success_create_account, Toast.LENGTH_SHORT).show();
+
+                            it = new Intent(SignUpActivity.this, LoginActivity.class);
+                            startActivity(it);
+                            finish();
+                        } else {
+                            Log.w(DB, "Failed to save user data to database", dbTask.getException());
+                            Toast.makeText(getApplicationContext(), R.string.error_saving_user_data, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } else {
-                    Log.w(TAG, "createUserWithEmail: failure", task.getException());
+                    Log.w(AUTH, "createUserWithEmail: failure", task.getException());
                     Toast.makeText(getApplicationContext(), R.string.email_already_exists, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -102,7 +127,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Log.d(TAG, "Email sent.");
+                    Log.d(AUTH, "Email sent.");
                     Toast.makeText(SignUpActivity.this, R.string.auth_mail_has_been_sent, Toast.LENGTH_SHORT).show();
                 }
             }
