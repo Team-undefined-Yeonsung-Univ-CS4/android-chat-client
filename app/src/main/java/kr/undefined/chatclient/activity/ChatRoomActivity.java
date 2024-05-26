@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -70,7 +69,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         layoutManager.setStackFromEnd(true);
         rvChatList.setLayoutManager(layoutManager);
 
-        ArrayList<ChatMessage> chatMessages = new ArrayList<>(); // 변경된 부분
+        ArrayList<ChatMessage> chatMessages = new ArrayList<>();
         chatAdapter = new ChatRoomAdapter(chatMessages);
         rvChatList.setAdapter(chatAdapter);
 
