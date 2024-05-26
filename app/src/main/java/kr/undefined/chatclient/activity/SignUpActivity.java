@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,10 +27,9 @@ public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseUser user;
 
-    ConstraintLayout rootLayout;
+    private ConstraintLayout rootLayout;
     private Toolbar toolbar;
-    private EditText etName, etEmail, etPassword;
-    private Spinner spBirthYear, spBirthMonth, spBirthDay;
+    private EditText etName, etEmail, etPassword, etBirthday;
     private AppCompatButton btnSignUp;
 
     Intent it;
@@ -41,14 +39,14 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        auth = FirebaseAuth.getInstance();
+
         rootLayout = findViewById(R.id.root_layout);
         toolbar = findViewById(R.id.toolbar);
         etName = findViewById(R.id.et_name);
         etEmail = findViewById(R.id.et_email);
         etPassword = findViewById(R.id.et_password);
-        spBirthYear = findViewById(R.id.sp_birth_year);
-        spBirthMonth = findViewById(R.id.sp_birth_month);
-        spBirthDay = findViewById(R.id.sp_birth_day);
+        etBirthday = findViewById(R.id.et_birthday);
         btnSignUp = findViewById(R.id.btn_sign_up);
 
         setSupportActionBar(toolbar);
@@ -68,29 +66,24 @@ public class SignUpActivity extends AppCompatActivity {
         String name = etName.getText().toString();
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
+        String birthday = etBirthday.getText().toString();
 
-        // TODO: 생년월일 데이터 DB insert
-        String birthYear = spBirthYear.getSelectedItem().toString();
-        String birthMonth = spBirthMonth.getSelectedItem().toString();
-        String birthDay = spBirthDay.getSelectedItem().toString();
+        // TODO: 유저 데이터 DB insert
 
-        if (!(name.isEmpty() && email.isEmpty() && password.isEmpty())) {
+        if (!(name.isEmpty() && email.isEmpty() && password.isEmpty() && birthday.isEmpty())) {
             auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "createUserWithEmail: success");
                     Toast.makeText(getApplicationContext(), R.string.success_create_account, Toast.LENGTH_SHORT).show();
-                    // FirebaseUser user = auth.getCurrentUser();
 
                     // TODO: 인증 메일 전송 및 승인 여부 체크
 
-                    it = new Intent(SignUpActivity.this, LobbyActivity.class);
+                    it = new Intent(SignUpActivity.this, LoginActivity.class);
                     startActivity(it);
                     finish();
                 } else {
                     Log.w(TAG, "createUserWithEmail: failure", task.getException());
-                    Toast.makeText(getApplicationContext(), R.string.unable_to_create_account, Toast.LENGTH_SHORT).show();
-                    // TODO: 계정 생성 실패 사유를 더 상세하게 설명
-                    //  (이메일 중복? 유효하지 않은 입력값? 등등)
+                    Toast.makeText(getApplicationContext(), R.string.email_already_exists, Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
