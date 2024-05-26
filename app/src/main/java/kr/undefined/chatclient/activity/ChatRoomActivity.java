@@ -1,8 +1,10 @@
 package kr.undefined.chatclient.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -22,6 +24,7 @@ import kr.undefined.chatclient.R;
 import kr.undefined.chatclient.adapter.ChatRoomAdapter;
 import kr.undefined.chatclient.manager.ChatManager;
 import kr.undefined.chatclient.manager.ChatMessage;
+import kr.undefined.chatclient.util.DialogManager;
 
 public class ChatRoomActivity extends AppCompatActivity {
 
@@ -76,6 +79,15 @@ public class ChatRoomActivity extends AppCompatActivity {
         btnSend.setOnClickListener(v -> sendMessage());
 
         ChatManager.getInstance(); // 인스턴스 생성 및 서버 연결
+
+        //참여자 레이아웃 클릭시 이벤트
+        Context context = this; // Dialog 호출 시 필요
+        btnParticipant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogManager.showParticipantsDialog(context);
+            }
+        });
     }
 
     private void sendMessage() {
