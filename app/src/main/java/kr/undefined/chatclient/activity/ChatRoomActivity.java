@@ -80,9 +80,9 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         ChatManager.getInstance(); // 인스턴스 생성 및 서버 연결
 
-        //참여자 레이아웃 클릭시 이벤트
+        //프로필 클릭시 이벤트
         Context context = this; // Dialog 호출 시 필요
-        btnParticipant.setOnClickListener(new View.OnClickListener() {
+        btnUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DialogManager.showParticipantsDialog(context);
