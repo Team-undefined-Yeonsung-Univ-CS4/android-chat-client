@@ -29,6 +29,9 @@
     <string name="enter_all_info">모든 정보를 입력해주세요</string>
     <string name="auth_mail_has_been_sent">인증 메일이 전송되었습니다</string>
     <string name="error_saving_user_data">[데이터베이스 오류] 서버에 계정 정보를 전달하지 못했습니다</string>
-    <string name="nickname">임시닉네임</string>
-    <string name="status_message">임시상태메시지</string>
+    <string name="nickname">닉네임</string>
+    <string name="status_message">상태메시지</string>
+    <string name="my_page">마이페이지</string>
+    <string name="try_rolling_the_dice">주사위를 굴려보세요!</string>
+    <string name="introduce_your_self">개성있게 자신을 표현해보세요!</string>
 </resources>

@@ -16,13 +16,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-
 import kr.undefined.chatclient.R;
 import kr.undefined.chatclient.adapter.RoomListAdapter;
 import kr.undefined.chatclient.item.RoomListItem;
@@ -105,14 +98,8 @@ public class LobbyActivity extends AppCompatActivity {
 //        tvUserNickname.setText(currentUser.getEmail());
 
         btnUserProfileImg.setOnClickListener(view -> {
-            // TODO: 마이 페이지로 이동
-            
-            /********************* 임시 로그아웃 기능 **********************/
-            auth.signOut();
-            it = new Intent(getApplicationContext(), LoginActivity.class);
+            it = new Intent(getApplicationContext(), MyPageActivity.class);
             startActivity(it);
-            finish();
-            /*************************************************************/
         });
 
         btnSearchingRoom.setOnClickListener(view -> {
