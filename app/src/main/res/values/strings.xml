@@ -32,6 +32,7 @@
     <string name="nickname">닉네임</string>
     <string name="status_message">상태메시지</string>
     <string name="my_page">마이페이지</string>
-    <string name="try_rolling_the_dice">주사위를 굴려보세요!</string>
+    <string name="try_create_alias_wizard">별명 생성 마법사를 사용해보세요!</string>
     <string name="introduce_your_self">개성있게 자신을 표현해보세요!</string>
+    <string name="save">저장하기</string>
 </resources>

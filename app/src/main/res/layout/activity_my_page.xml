@@ -39,15 +39,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <ImageButton
-        android:id="@+id/imageButton2"
+    <FrameLayout
+        android:id="@+id/btn_edit_banner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_brush_24"
-        tools:layout_editor_absoluteX="362dp"
-        tools:layout_editor_absoluteY="161dp" />
+        app:layout_constraintBottom_toBottomOf="@+id/iv_banner_img"
+        app:layout_constraintEnd_toEndOf="@+id/iv_banner_img">
+
+        <ImageView
+            android:id="@+id/iv_edit_banner_brush"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_circle_shadow_40" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:srcCompat="@drawable/ic_brush_24" />
+
+    </FrameLayout>
 
     <ImageView
         android:id="@+id/iv_profile_img"
@@ -55,22 +71,40 @@
         android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="@+id/iv_banner_img"
         app:layout_constraintEnd_toEndOf="@+id/iv_banner_img"
-        app:layout_constraintHorizontal_bias="0.131"
+        app:layout_constraintHorizontal_bias="0.135"
         app:layout_constraintStart_toStartOf="@+id/iv_banner_img"
         app:layout_constraintTop_toBottomOf="@+id/iv_banner_img"
-        app:layout_constraintVertical_bias="0.49"
+        app:layout_constraintVertical_bias="0.5"
         app:srcCompat="@drawable/ic_user" />
 
-    <ImageButton
-        android:id="@+id/imageButton"
+    <FrameLayout
+        android:id="@+id/btn_edit_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_brush_24"
-        tools:layout_editor_absoluteX="107dp"
-        tools:layout_editor_absoluteY="218dp" />
+        app:layout_constraintBottom_toBottomOf="@+id/iv_profile_img"
+        app:layout_constraintEnd_toEndOf="@+id/iv_profile_img">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_circle_shadow_40" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_profile_img"
+            app:layout_constraintEnd_toEndOf="@+id/iv_profile_img"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/iv_profile_img"
+            app:layout_constraintTop_toTopOf="@+id/iv_profile_img"
+            app:srcCompat="@drawable/ic_brush_24" />
+
+    </FrameLayout>
 
     <TextView
-        android:id="@+id/tv_nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -85,28 +119,31 @@
         android:layout_height="46dp"
         android:layout_marginHorizontal="50dp"
         android:layout_marginTop="56dp"
-        android:paddingHorizontal="14dp"
         android:background="@drawable/bg_rounded_edittext"
         android:ems="10"
+        android:hint="@string/try_create_alias_wizard"
         android:inputType="text"
         android:maxLength="9"
+        android:paddingHorizontal="14dp"
         android:textSize="15sp"
-        android:hint="@string/try_rolling_the_dice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_profile_img" />
 
     <ImageButton
-        android:id="@+id/imageButton4"
+        android:id="@+id/btn_alias_wizard"
         android:layout_width="39dp"
         android:layout_height="40dp"
-        app:srcCompat="@android:drawable/ic_menu_report_image"
-        tools:layout_editor_absoluteX="316dp"
-        tools:layout_editor_absoluteY="316dp" />
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/et_nickname"
+        app:layout_constraintEnd_toEndOf="@+id/et_nickname"
+        app:layout_constraintTop_toTopOf="@+id/et_nickname"
+        app:layout_constraintVertical_bias="0.4"
+        app:srcCompat="@drawable/ic_magic_24" />
 
     <TextView
-        android:id="@+id/tv_status_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -121,27 +158,42 @@
         android:layout_height="46dp"
         android:layout_marginHorizontal="50dp"
         android:layout_marginTop="50dp"
-        android:paddingHorizontal="14dp"
         android:background="@drawable/bg_rounded_edittext"
         android:ems="10"
+        android:hint="@string/introduce_your_self"
         android:inputType="text"
         android:maxLength="100"
+        android:paddingHorizontal="14dp"
         android:textSize="15sp"
-        android:hint="@string/introduce_your_self"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_nickname" />
 
-    <Button
-        android:id="@+id/btn_sign_out"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_save"
+        android:layout_width="125dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="44dp"
         android:background="@drawable/bg_x_button"
-        android:text="@string/sign_out"
+        android:textStyle="bold"
+        android:text="@string/save"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_status_msg" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_sign_out"
+        android:layout_width="125dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/bg_x_button_gray"
+        android:textStyle="bold"
+        android:text="@string/sign_out"
+        app:layout_constraintEnd_toEndOf="@+id/btn_save"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/btn_save"
+        app:layout_constraintTop_toBottomOf="@+id/btn_save" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

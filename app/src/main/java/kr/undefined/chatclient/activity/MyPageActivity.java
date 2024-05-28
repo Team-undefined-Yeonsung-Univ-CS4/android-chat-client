@@ -3,6 +3,8 @@ package kr.undefined.chatclient.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
@@ -32,7 +34,9 @@ public class MyPageActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ImageView ivBannerImg, ivProfileImg;
     private EditText etNickName, etStatusMsg;
-    private AppCompatButton btnUpload, btnRemove, btnSave, btnSignOut;
+    private FrameLayout btnEditProfile, btnEditBanner;
+    private ImageButton btnAliasWizard;
+    private AppCompatButton btnSave, btnSignOut;
 
     private Intent it;
 
@@ -50,9 +54,10 @@ public class MyPageActivity extends AppCompatActivity {
         ivProfileImg = findViewById(R.id.iv_profile_img);
         etNickName = findViewById(R.id.et_nickname);
         etStatusMsg = findViewById(R.id.et_status_msg);
-//        btnUpload = findViewById(R.id.btn_upload);
-//        btnRemove = findViewById(R.id.btn_remove);
-//        btnSave = findViewById(R.id.btn_save);
+        btnEditProfile = findViewById(R.id.btn_edit_profile);
+        btnEditBanner = findViewById(R.id.btn_edit_banner);
+        btnAliasWizard = findViewById(R.id.btn_alias_wizard);
+        btnSave = findViewById(R.id.btn_save);
         btnSignOut = findViewById(R.id.btn_sign_out);
 
         setSupportActionBar(toolbar);
@@ -60,9 +65,46 @@ public class MyPageActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_chevron);
 
+        // TODO: 저장하기 버튼은 기본 비활성화 상태로 유지, 변경사항이 생기면 활성화
+//        btnSave
+
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
         rootLayout.setOnClickListener(view -> UtilManager.clearFocus(this));
+        btnEditBanner.setOnClickListener(view -> editBannerImg());
+        btnEditProfile.setOnClickListener(view -> editProfileImg());
+        btnAliasWizard.setOnClickListener(view -> createRandomAlias());
+        btnSave.setOnClickListener(view -> requestUpdateUserData());
         btnSignOut.setOnClickListener(view -> signOut());
+    }
+
+    /**
+     * 배너 이미지 변경
+     */
+    private void editBannerImg() {
+        // TODO: 기기 갤러리 참조하는 Activity가 있어야함
+//        ivBannerImg
+    }
+
+    /**
+     * 프로필 이미지 변경
+     */
+    private void editProfileImg() {
+        // TODO: 기기 갤러리 참조하는 Activity가 있어야함
+//        ivProfileImg
+    }
+
+    /**
+     * 랜덤 닉네임 생성기
+     */
+    private void createRandomAlias() {
+        // TODO: 형용사 + 명사 (10 x 10) 랜덤 닉네임 생성
+    }
+
+    /**
+     * Firebase Realtime DB에 사용자 프로필 정보에 대한 모든 변경사항을 적용
+     */
+    private void requestUpdateUserData() {
+        // TODO: 사용자 데이터 업데이트 요청
     }
 
     /**
