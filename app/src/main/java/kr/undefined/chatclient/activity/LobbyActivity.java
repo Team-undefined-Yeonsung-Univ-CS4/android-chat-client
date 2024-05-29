@@ -19,18 +19,19 @@ import java.util.ArrayList;
 import kr.undefined.chatclient.R;
 import kr.undefined.chatclient.adapter.RoomListAdapter;
 import kr.undefined.chatclient.item.RoomListItem;
+import kr.undefined.chatclient.manager.SocketManager;
 
 public class LobbyActivity extends AppCompatActivity {
     private FirebaseAuth auth;
-    private FirebaseUser currentUser;
+    private FirebaseUser user;
 
-    Toolbar toolbar;
-    RecyclerView rvRoomList;
-    TextView tvConcurrentConnectors, tvUserNickname;
-    ImageButton btnUserProfileImg;
-    FrameLayout btnSearchingRoom, btnCreatingRoom;
+    private Toolbar toolbar;
+    private RecyclerView rvRoomList;
+    private TextView tvConcurrentConnectors, tvUserNickname;
+    private ImageButton btnUserProfileImg;
+    private FrameLayout btnSearchingRoom, btnCreatingRoom;
 
-    Intent it;
+    private Intent it;
 
     private RoomListAdapter roomListAdapter;
     private ArrayList<RoomListItem> roomList = new ArrayList<>();
@@ -40,8 +41,8 @@ public class LobbyActivity extends AppCompatActivity {
         super.onStart();
 
         // 활동을 초기화할 때 사용자가 현재 로그인되어 있는지 확인
-        currentUser = auth.getCurrentUser();
-        if (currentUser == null) {
+        user = auth.getCurrentUser();
+        if (user == null) {
             it = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(it);
             finish();
@@ -54,6 +55,11 @@ public class LobbyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lobby);
 
         auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+
+        if (user != null) {
+            SocketManager.getInstance().setLobbyActivity(this);
+        }
 
         toolbar = findViewById(R.id.toolbar);
         rvRoomList = findViewById(R.id.rv_room_list);
@@ -109,6 +115,10 @@ public class LobbyActivity extends AppCompatActivity {
         btnCreatingRoom.setOnClickListener(view -> {
             // TODO: 방 만들기 다이얼로그 생성
         });
+    }
+
+    public void updateUserCount(String userCount) {
+        runOnUiThread(() -> tvConcurrentConnectors.setText(userCount));
     }
 }
 

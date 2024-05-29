@@ -22,22 +22,26 @@ import java.util.ArrayList;
 
 import kr.undefined.chatclient.R;
 import kr.undefined.chatclient.adapter.ChatRoomAdapter;
-import kr.undefined.chatclient.manager.ChatManager;
+import kr.undefined.chatclient.manager.SocketManager;
 import kr.undefined.chatclient.manager.ChatMessage;
 import kr.undefined.chatclient.util.DialogManager;
 
 public class ChatRoomActivity extends AppCompatActivity {
 
-    Toolbar toolbar;
-    TextView tvTitle, tvUserNickname, tvNumOfPeople;
-    RecyclerView rvChatList;
-    EditText etMessageInput;
-    ImageButton btnFunction, btnSend, btnUserProfile;
-    FrameLayout btnParticipant;
-    ChatRoomAdapter chatAdapter;
+    private Toolbar toolbar;
+    private TextView tvTitle, tvUserNickname, tvNumOfPeople;
+    private RecyclerView rvChatList;
+    private EditText etMessageInput;
+    private ImageButton btnFunction, btnSend, btnUserProfile;
+    private FrameLayout btnParticipant;
+    private ChatRoomAdapter chatAdapter;
 
     private static ChatRoomActivity instance;
     private static Handler uiHandler;
+
+    static {
+        uiHandler = new Handler(Looper.getMainLooper());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +49,6 @@ public class ChatRoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat_room);
 
         instance = this;
-        uiHandler = new Handler(Looper.getMainLooper());
 
         toolbar = findViewById(R.id.toolbar);
         tvTitle = findViewById(R.id.tv_title);
@@ -78,7 +81,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         btnSend.setOnClickListener(v -> sendMessage());
 
-        ChatManager.getInstance(); // 인스턴스 생성 및 서버 연결
+        SocketManager.getInstance(); // 인스턴스 생성 및 서버 연결
 
         //프로필 클릭시 이벤트
         Context context = this; // Dialog 호출 시 필요
@@ -99,19 +102,21 @@ public class ChatRoomActivity extends AppCompatActivity {
 
                 etMessageInput.setText("");
 
-                ChatManager.getInstance().sendMessage(uid + ":" + messageText);
+                SocketManager.getInstance().sendMessage(uid + ":" + messageText);
             }
         }
     }
 
     public static void handleMessage(String uid, String messageText) {
-        uiHandler.post(() -> {
-            if (instance != null) {
-                ChatMessage message = new ChatMessage(uid, messageText);
-                instance.chatAdapter.addMessage(message);
-                instance.rvChatList.scrollToPosition(instance.chatAdapter.getItemCount() - 1);
-            }
-        });
+        if (uiHandler != null) {
+            uiHandler.post(() -> {
+                if (instance != null) {
+                    ChatMessage message = new ChatMessage(uid, messageText);
+                    instance.chatAdapter.addMessage(message);
+                    instance.rvChatList.scrollToPosition(instance.chatAdapter.getItemCount() - 1);
+                }
+            });
+        }
     }
 }
 

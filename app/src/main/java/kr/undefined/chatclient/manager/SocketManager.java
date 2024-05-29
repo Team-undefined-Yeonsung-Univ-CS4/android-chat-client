@@ -8,24 +8,34 @@ import java.net.Socket;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import kr.undefined.chatclient.activity.ChatRoomActivity;
+import kr.undefined.chatclient.activity.LobbyActivity;
 
-public class ChatManager {
-    private static ChatManager instance;
+public class SocketManager {
+    private FirebaseUser user;
+
+    private static SocketManager instance;
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
-    private static final String SERVER_IP = "192.168.219.109"; // 서버의 IP 주소
-    private static final int SERVER_PORT = 9998; // 서버의 포트 번호
 
-    private ChatManager() {
+    private static final String SERVER_IP = "192.168.219.109";
+    private static final int SERVER_PORT = 9998;
+
+    private LobbyActivity lobbyActivity;
+
+    private SocketManager() {
         connectToServer();
     }
 
-    public static synchronized ChatManager getInstance() {
+    public static synchronized SocketManager getInstance() {
         if (instance == null) {
-            instance = new ChatManager();
+            instance = new SocketManager();
         }
         return instance;
+    }
+
+    public void setLobbyActivity(LobbyActivity lobbyActivity) {
+        this.lobbyActivity = lobbyActivity;
     }
 
     private void connectToServer() {
@@ -34,6 +44,7 @@ public class ChatManager {
                 socket = new Socket(SERVER_IP, SERVER_PORT);
                 out = new PrintWriter(socket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                sendUserId();
                 listenForMessages();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -42,11 +53,31 @@ public class ChatManager {
         }).start();
     }
 
+    /**
+     * 서버로 사용자 ID 전송
+     */
+    private void sendUserId() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null && out != null) {
+            String uid = user.getUid();
+            out.println(uid);
+        }
+    }
+
     private void listenForMessages() {
         new Thread(() -> {
             try {
                 String message;
                 while ((message = in.readLine()) != null) {
+                    if (message.startsWith("USER_COUNT:")) {
+                        String userCnt = message.split(":")[1];
+
+                        if (lobbyActivity != null) {
+                            // 현재 접속자 수 업데이트
+                            lobbyActivity.updateUserCount(userCnt);
+                        }
+                    }
                     // 수신한 메시지를 UID와 메시지로 분리
                     String[] parts = message.split(":", 2);
                     if (parts.length == 2) {
@@ -65,7 +96,7 @@ public class ChatManager {
     public void sendMessage(String message) {
         new Thread(() -> {
             if (out != null) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user != null) {
                     String uid = user.getUid();
                     // UID와 메시지를 콜론으로 연결
