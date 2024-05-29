@@ -1,12 +1,22 @@
 package kr.undefined.chatclient.item;
 
 public class RoomListItem {
+    private String roomId;
     private String title;
     private String members;
 
-    public RoomListItem(String title, String members) {
+    public RoomListItem(String roomId, String title, String members) {
+        this.roomId = roomId;
         this.title = title;
         this.members = members;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
     }
 
     public String getTitle() {
@@ -25,3 +35,4 @@ public class RoomListItem {
         this.members = members;
     }
 }
+

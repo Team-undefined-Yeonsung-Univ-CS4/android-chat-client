@@ -39,10 +39,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if (viewType == VIEW_TYPE_MY_MESSAGE) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_my_message, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_my_message,
+                    parent, false);
             return new MyMessageViewHolder(view);
         } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_other_message, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_other_message,
+                    parent, false);
             return new OtherMessageViewHolder(view);
         }
     }
@@ -51,18 +53,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ChatMessage chatMessage = chatList.get(position);
         String messageText = chatMessage.getMessage(); // 채팅 메시지를 가져옴
-        // 채팅 메시지를 콜론으로 분리하여 uid와 메시지를 구분
-        String[] parts = messageText.split(":", 2);
-        if (parts.length == 2) {
-            String message = parts[1]; // 메시지 부분만 추출
-            if (holder.getItemViewType() == VIEW_TYPE_MY_MESSAGE) {
-                ((MyMessageViewHolder) holder).bind(message);
-            } else {
-                ((OtherMessageViewHolder) holder).bind(message);
-            }
+        if (holder.getItemViewType() == VIEW_TYPE_MY_MESSAGE) {
+            ((MyMessageViewHolder) holder).bind(messageText);
+        } else {
+            ((OtherMessageViewHolder) holder).bind(messageText);
         }
     }
-
 
     @Override
     public int getItemCount() {
@@ -85,7 +81,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public void bind(String message) {
             messageTextView.setText(message);
         }
-
     }
 
     public static class OtherMessageViewHolder extends RecyclerView.ViewHolder {
@@ -101,5 +96,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 }
+
 
 

@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import kr.undefined.chatclient.R;
 import kr.undefined.chatclient.adapter.ChatRoomAdapter;
@@ -35,6 +36,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     private static ChatRoomActivity instance;
     private static Handler uiHandler;
+    private String roomId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,16 +68,22 @@ public class ChatRoomActivity extends AppCompatActivity {
         tvNumOfPeople.setText("1 / 8");
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setStackFromEnd(true);
         rvChatList.setLayoutManager(layoutManager);
 
-        ArrayList<ChatMessage> chatMessages = new ArrayList<>();
-        chatAdapter = new ChatRoomAdapter(chatMessages);
+        roomId = getIntent().getStringExtra("roomId");
+
+        List<ChatMessage> chatMessages = loadChatHistory(roomId); // 방 번호에 맞는 채팅 내역 불러오기
+        chatAdapter = new ChatRoomAdapter(new ArrayList<>(chatMessages));
         rvChatList.setAdapter(chatAdapter);
 
         btnSend.setOnClickListener(v -> sendMessage());
 
-        ChatManager.getInstance(); // 인스턴스 생성 및 서버 연결
+        ChatManager.getInstance().setCurrentRoomId(roomId);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     private void sendMessage() {
@@ -87,19 +95,33 @@ public class ChatRoomActivity extends AppCompatActivity {
 
                 etMessageInput.setText("");
 
-                ChatManager.getInstance().sendMessage(uid + ":" + messageText);
+                ChatManager.getInstance().sendMessage(messageText);
             }
         }
     }
 
-    public static void handleMessage(String uid, String messageText) {
+    public static void handleMessage(String roomId, String uid, String messageText) {
         uiHandler.post(() -> {
-            if (instance != null) {
-                ChatMessage message = new ChatMessage(uid, messageText);
+            if (instance != null && instance.roomId.equals(roomId)) {
+                ChatMessage message = new ChatMessage(roomId, uid, messageText);
                 instance.chatAdapter.addMessage(message);
                 instance.rvChatList.scrollToPosition(instance.chatAdapter.getItemCount() - 1);
             }
         });
     }
+
+    private List<ChatMessage> loadChatHistory(String roomId) {
+        // 전체 채팅 리스트에서 방 번호에 맞는 채팅 내역을 필터링하여 반환
+        List<ChatMessage> allMessages = ChatManager.getInstance().getAllMessages();
+        List<ChatMessage> roomMessages = new ArrayList<>();
+        for (ChatMessage message : allMessages) {
+            if (message.getRoomId().equals(roomId)) {
+                roomMessages.add(message);
+            }
+        }
+        return roomMessages;
+    }
 }
+
+
 

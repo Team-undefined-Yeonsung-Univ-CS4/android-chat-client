@@ -26,6 +26,7 @@ import java.net.Socket;
 import kr.undefined.chatclient.R;
 import kr.undefined.chatclient.adapter.RoomListAdapter;
 import kr.undefined.chatclient.item.RoomListItem;
+import kr.undefined.chatclient.manager.ChatManager;
 
 public class LobbyActivity extends AppCompatActivity {
     private FirebaseAuth auth;
@@ -41,10 +42,6 @@ public class LobbyActivity extends AppCompatActivity {
 
     private RoomListAdapter roomListAdapter;
     private ArrayList<RoomListItem> roomList = new ArrayList<>();
-
-    private static final String SERVER_IP = "192.168.219.194"; // 서버의 IP 주소
-    private static final int SERVER_PORT = 9998; // 서버의 포트 번호
-    private Socket socket;
 
     @Override
     public void onStart() {
@@ -75,16 +72,18 @@ public class LobbyActivity extends AppCompatActivity {
         btnCreatingRoom = findViewById(R.id.btn_creating_room);
 
         rvRoomList.setLayoutManager(new LinearLayoutManager(this));
+
         /******************************** 테스트용 더미 코드 ********************************/
-        roomList.add(new RoomListItem("제 귀여운 재귀함수좀 보실래요", "1/3"));
-        roomList.add(new RoomListItem("제가 싱글이라 싱글톤 패턴을 자주 써요", "2/2"));
-        roomList.add(new RoomListItem("전 html로 프로그래밍 해요", "7/8"));
-        roomList.add(new RoomListItem("챗지피티 주도 개발", "1/8"));
-        roomList.add(new RoomListItem("TDD는 죽었다", "2/8"));
-        roomList.add(new RoomListItem("비전공 엄랭 4개월차 쿠팡 취업 후기", "3/4"));
-        roomList.add(new RoomListItem("CSS 따위 안쓰는 사나이클럽", "2/4"));
-        roomList.add(new RoomListItem("님들 졸업하면 컴퓨터 파시는거죠", "2/4"));
+        roomList.add(new RoomListItem("1", "제 귀여운 재귀함수좀 보실래요", "1/3"));
+        roomList.add(new RoomListItem("2", "제가 싱글이라 싱글톤 패턴을 자주 써요", "2/2"));
+        roomList.add(new RoomListItem("3", "전 html로 프로그래밍 해요", "7/8"));
+        roomList.add(new RoomListItem("4", "챗지피티 주도 개발", "1/8"));
+        roomList.add(new RoomListItem("5", "TDD는 죽었다", "2/8"));
+        roomList.add(new RoomListItem("6", "비전공 엄랭 4개월차 쿠팡 취업 후기", "3/4"));
+        roomList.add(new RoomListItem("7", "CSS 따위 안쓰는 사나이클럽", "2/4"));
+        roomList.add(new RoomListItem("8", "님들 졸업하면 컴퓨터 파시는거죠", "2/4"));
         /**********************************************************************************/
+
         roomListAdapter = new RoomListAdapter(roomList);
         rvRoomList.setAdapter(roomListAdapter);
 
@@ -102,12 +101,11 @@ public class LobbyActivity extends AppCompatActivity {
             // TODO: 방 입장 프로세스 다이얼로그 생성
             //  => 아래는 채팅방 작업을 위한 임시 코드임
             it = new Intent(getApplicationContext(), ChatRoomActivity.class);
+            it.putExtra("roomId", item.getRoomId());
             startActivity(it);
         });
-
         // TODO: 사용자 닉네임 할당 (기본 값은 이메일 부분이 제외된 ID)
 //        tvUserNickname.setText(currentUser.getEmail());
-
         btnUserProfileImg.setOnClickListener(view -> {
             // TODO: 마이 페이지로 이동
         });
@@ -119,6 +117,10 @@ public class LobbyActivity extends AppCompatActivity {
         btnCreatingRoom.setOnClickListener(view -> {
             // TODO: 방 만들기 다이얼로그 생성
         });
+
+        // 서버 연결
+        ChatManager.getInstance().connectToServer();
     }
 }
+
 
