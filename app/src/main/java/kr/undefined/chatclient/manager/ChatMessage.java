@@ -1,12 +1,18 @@
 package kr.undefined.chatclient.manager;
 
 public class ChatMessage {
+    private String roomId;
     private String uid;
     private String message;
 
-    public ChatMessage(String uid, String message) {
+    public ChatMessage(String roomId, String uid, String message) {
+        this.roomId = roomId;
         this.uid = uid;
         this.message = message;
+    }
+
+    public String getRoomId() {
+        return roomId;
     }
 
     public String getUid() {
@@ -17,6 +23,10 @@ public class ChatMessage {
         return message;
     }
 
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+
     public void setUid(String uid) {
         this.uid = uid;
     }
@@ -25,4 +35,5 @@ public class ChatMessage {
         this.message = message;
     }
 }
+
 
