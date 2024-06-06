@@ -1,21 +1,21 @@
 package kr.undefined.chatclient.item;
 
 public class RoomListItem {
-    private String roomId;  // 추가된 부분
+    private String roomId;
     private String title;
     private String members;
 
-    public RoomListItem(String roomId, String title, String members) {  // 수정된 부분
-        this.roomId = roomId;  // 추가된 부분
+    public RoomListItem(String roomId, String title, String members) {
+        this.roomId = roomId;
         this.title = title;
         this.members = members;
     }
 
-    public String getRoomId() {  // 추가된 부분
+    public String getRoomId() {
         return roomId;
     }
 
-    public void setRoomId(String roomId) {  // 추가된 부분
+    public void setRoomId(String roomId) {
         this.roomId = roomId;
     }
 
@@ -35,4 +35,3 @@ public class RoomListItem {
         this.members = members;
     }
 }
-

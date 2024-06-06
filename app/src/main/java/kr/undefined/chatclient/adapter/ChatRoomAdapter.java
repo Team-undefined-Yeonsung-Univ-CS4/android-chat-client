@@ -53,10 +53,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ChatMessage chatMessage = chatList.get(position);
         String messageText = chatMessage.getMessage(); // 채팅 메시지를 가져옴
+        String userName = chatMessage.getUserName(); // 사용자 닉네임을 가져옴
         if (holder.getItemViewType() == VIEW_TYPE_MY_MESSAGE) {
             ((MyMessageViewHolder) holder).bind(messageText);
         } else {
-            ((OtherMessageViewHolder) holder).bind(messageText);
+            ((OtherMessageViewHolder) holder).bind(messageText, userName);
         }
     }
 
@@ -75,7 +76,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public MyMessageViewHolder(@NonNull View itemView) {
             super(itemView);
-            messageTextView = itemView.findViewById(R.id.tvChat);
+            messageTextView = itemView.findViewById(R.id.tv_chat);
         }
 
         public void bind(String message) {
@@ -85,17 +86,17 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public static class OtherMessageViewHolder extends RecyclerView.ViewHolder {
         TextView messageTextView;
+        TextView userNameTextView;
 
         public OtherMessageViewHolder(@NonNull View itemView) {
             super(itemView);
-            messageTextView = itemView.findViewById(R.id.tvChat);
+            messageTextView = itemView.findViewById(R.id.tv_chat);
+            userNameTextView = itemView.findViewById((R.id.tv_user_nickname));
         }
 
-        public void bind(String message) {
+        public void bind(String message, String username) {
             messageTextView.setText(message);
+            userNameTextView.setText(username);
         }
     }
 }
-
-
-

@@ -13,8 +13,8 @@ import com.google.firebase.auth.FirebaseUser;
 import kr.undefined.chatclient.activity.ChatRoomActivity;
 import kr.undefined.chatclient.activity.LobbyActivity;
 
-public class SocketManager {private static final String SERVER_IP = "172.30.1.47"; // 서버의 IP 주소
-
+public class SocketManager {
+    private static final String SERVER_IP = "172.30.1.47";
     private static final int SERVER_PORT = 9998;
 
     private FirebaseUser user;
@@ -33,9 +33,6 @@ public class SocketManager {private static final String SERVER_IP = "172.30.1.47
 
     private Thread connectionThread;
 
-//    private SocketManager() {
-//        connectToServer();
-//    }
     private SocketManager() {}
 
     public static synchronized SocketManager getInstance() {
@@ -49,30 +46,21 @@ public class SocketManager {private static final String SERVER_IP = "172.30.1.47
         this.lobbyActivity = lobbyActivity;
     }
 
-//    private void connectToServer() {
-//        new Thread(() -> {
-//            try {
-//                socket = new Socket(SERVER_IP, SERVER_PORT);
-//                out = new PrintWriter(socket.getOutputStream(), true);
-//                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                sendUserId();
-//                listenForMessages();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                // 서버 연결 실패시 처리할 로직 추가
-//            }
-//        }).start();
-//    }
+    /**
+     * 소켓 서버 연결 및 전체 메시지에 대한 핸들링
+     */
     public void connectToServer() {
         if (isConnected) {
             return; // 이미 연결되어 있는 경우 새로운 연결을 생성하지 않음
         }
+
         connectionThread = new Thread(() -> {
             try {
                 socket = new Socket(SERVER_IP, SERVER_PORT);
                 out = new PrintWriter(socket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 isConnected = true;
+                sendUserId();
 
                 // 메시지 수신 루프
                 String message;
@@ -89,18 +77,23 @@ public class SocketManager {private static final String SERVER_IP = "172.30.1.47
 
     private void handleMessage(String message) {
         // 메시지 처리
-        String[] parts = message.split(":", 3);
-        if (parts.length == 3) {
+        String[] parts = message.split(":", 4);
+
+        // FIXME: 각기 다른 소켓 메시지 처리에 대한 구분을 상태코드로 식별하도록 수정
+        if (message.startsWith("USER_COUNT")) {
+            String userCnt = message.split(":")[1];
+            lobbyActivity.updateUserCount(userCnt);
+        } else if (parts.length == 4) {
             String roomId = parts[0];
             String uid = parts[1];
-            String msg = parts[2];
-            ChatMessage chatMessage = new ChatMessage(roomId, uid, msg);
+            String userName = parts[2];
+            String msg = parts[3];
+            ChatMessage chatMessage = new ChatMessage(roomId, uid, userName, msg);
             allMessages.add(chatMessage); // 전체 메시지 리스트에 추가
-            ChatRoomActivity.handleMessage(roomId, uid, msg);
+            ChatRoomActivity.handleMessage(roomId, uid, userName, msg);
         }
     }
 
-    // FIXME: 변경사항에 맞게 적용
     /**
      * 서버로 사용자 ID 전송
      */
@@ -113,56 +106,20 @@ public class SocketManager {private static final String SERVER_IP = "172.30.1.47
         }
     }
 
-//    private void listenForMessages() {
-//        new Thread(() -> {
-//            try {
-//                String message;
-//                while ((message = in.readLine()) != null) {
-//                    if (message.startsWith("USER_COUNT:")) {
-//                        String userCnt = message.split(":")[1];
-//
-//                        if (lobbyActivity != null) {
-//                            // 현재 접속자 수 업데이트
-//                            lobbyActivity.updateUserCount(userCnt);
-//                        }
-//                    }
-//                    // 수신한 메시지를 UID와 메시지로 분리
-//                    String[] parts = message.split(":", 2);
-//                    if (parts.length == 2) {
-//                        String uid = parts[0];
-//                        String msg = parts[1];
-//                        ChatRoomActivity.handleMessage(uid, msg);
-//                    }
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                // 메시지 수신 실패시 처리할 로직 추가
-//            }
-//        }).start();
-//    }
-
-//    public void sendMessage(String message) {
-//        new Thread(() -> {
-//            if (out != null) {
-//                user = FirebaseAuth.getInstance().getCurrentUser();
-//                if (user != null) {
-//                    String uid = user.getUid();
-//                    // UID와 메시지를 콜론으로 연결
-//                    String formattedMessage = uid + ":" + message;
-//                    out.println(formattedMessage);
-//                }
-//            } else {
-//                // 메시지를 보낼 수 없는 경우 처리 로직
-//            }
-//        }).start();
-//    }
+    /**
+     * 메세지 전송
+     * @param message 사용자 입력 메시지
+     */
     public void sendMessage(String message) {
         if (out != null) {
-            user = FirebaseAuth.getInstance().getCurrentUser();
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
             if (user != null) {
                 String uid = user.getUid();
-                // 방 ID와 UID를 포함한 메시지 전송
-                String formattedMessage = roomId + ":" + uid + ":" + message;
+                String userName = "unknown"; // TODO : DB에서 사용자 닉네임 가져오기
+
+                // 방 ID와 UID, 이름을 포함한 메시지 전송
+                String formattedMessage = roomId + ":" + uid + ":" + userName + ":" + message;
                 new Thread(() -> out.println(formattedMessage)).start();
             }
         } else {

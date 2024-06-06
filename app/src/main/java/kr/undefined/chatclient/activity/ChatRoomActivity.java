@@ -39,12 +39,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     private static ChatRoomActivity instance;
     private static Handler uiHandler;
-
     private String roomId;
-
-    static {
-        uiHandler = new Handler(Looper.getMainLooper());
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +47,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat_room);
 
         instance = this;
+        uiHandler = new Handler(Looper.getMainLooper()); // FIXME: 용도 ?
 
         toolbar = findViewById(R.id.toolbar);
         tvTitle = findViewById(R.id.tv_title);
@@ -75,19 +71,16 @@ public class ChatRoomActivity extends AppCompatActivity {
         tvNumOfPeople.setText("1 / 8");
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-//        layoutManager.setStackFromEnd(true);
         rvChatList.setLayoutManager(layoutManager);
 
         roomId = getIntent().getStringExtra("roomId");
 
-//        ArrayList<ChatMessage> chatMessages = new ArrayList<>();
         List<ChatMessage> chatMessages = loadChatHistory(roomId); // 방 번호에 맞는 채팅 내역 불러오기
         chatAdapter = new ChatRoomAdapter(new ArrayList<>(chatMessages));
         rvChatList.setAdapter(chatAdapter);
 
         btnSend.setOnClickListener(v -> sendMessage());
 
-//        SocketManager.getInstance();
         SocketManager.getInstance().setCurrentRoomId(roomId); // 인스턴스 생성 및 서버 연결
 
         //프로필 클릭시 이벤트
@@ -103,7 +96,6 @@ public class ChatRoomActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // 방을 떠날 때 서버 연결을 끊지 않음
     }
 
     private void sendMessage() {
@@ -112,30 +104,20 @@ public class ChatRoomActivity extends AppCompatActivity {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
                 String uid = user.getUid();
-
                 etMessageInput.setText("");
-
-//                SocketManager.getInstance().sendMessage(uid + ":" + messageText);
                 SocketManager.getInstance().sendMessage(messageText);
             }
         }
     }
 
-    public static void handleMessage(String roomId, String uid, String messageText) {
-        if (uiHandler != null) {
-            uiHandler.post(() -> {
-//                if (instance != null) {
-//                    ChatMessage message = new ChatMessage(uid, messageText);
-//                    instance.chatAdapter.addMessage(message);
-//                    instance.rvChatList.scrollToPosition(instance.chatAdapter.getItemCount() - 1);
-//                }
-                if (instance != null && instance.roomId.equals(roomId)) {
-                    ChatMessage message = new ChatMessage(roomId, uid, messageText);
-                    instance.chatAdapter.addMessage(message);
-                    instance.rvChatList.scrollToPosition(instance.chatAdapter.getItemCount() - 1);
-                }
-            });
-        }
+    public static void handleMessage(String roomId, String uid, String userName, String messageText) {
+        uiHandler.post(() -> {
+            if (instance != null && instance.roomId.equals(roomId)) {
+                ChatMessage message = new ChatMessage(roomId, uid, userName, messageText);
+                instance.chatAdapter.addMessage(message);
+                instance.rvChatList.scrollToPosition(instance.chatAdapter.getItemCount() - 1);
+            }
+        });
     }
 
     private List<ChatMessage> loadChatHistory(String roomId) {
