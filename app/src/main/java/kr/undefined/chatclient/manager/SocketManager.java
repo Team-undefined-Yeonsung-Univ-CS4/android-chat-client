@@ -137,6 +137,9 @@ public class SocketManager {
 
     public void disconnectFromServer() {
         try {
+            if (out != null) {
+                out.println("DISCONNECT:" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+            }
             if (socket != null) {
                 socket.close();
             }
@@ -146,6 +149,3 @@ public class SocketManager {
         }
     }
 }
-
-
-

@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import kr.undefined.chatclient.R;
+import kr.undefined.chatclient.manager.SocketManager;
 import kr.undefined.chatclient.util.UtilManager;
 
 public class MyPageActivity extends AppCompatActivity {
@@ -111,9 +112,19 @@ public class MyPageActivity extends AppCompatActivity {
      * 로그인 상태를 해제시키고 로그인 화면으로 이동
      */
     private void signOut() {
-        auth.signOut();
-        it = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(it);
-        finish();
+
+        // 네트워크 작업은 별도의 스레드에서 수행해야 함
+        // 메인 스레드에서 수행 시 NetworkOnMainThreadException 발생함
+        new Thread(() -> {
+            SocketManager.getInstance().disconnectFromServer(); // 소켓 통신 종료
+
+            runOnUiThread(() -> {
+                auth.signOut(); // Firebase Auth 로그아웃
+
+                it = new Intent(MyPageActivity.this, LoginActivity.class);
+                startActivity(it);
+                finish();
+            });
+        }).start();
     }
 }
