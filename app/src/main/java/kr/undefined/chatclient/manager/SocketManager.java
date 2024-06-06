@@ -10,6 +10,12 @@ import java.util.List;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import kr.undefined.chatclient.activity.ChatRoomActivity;
 import kr.undefined.chatclient.activity.LobbyActivity;
 
@@ -18,6 +24,7 @@ public class SocketManager {
     private static final int SERVER_PORT = 9998;
 
     private FirebaseUser user;
+    private DatabaseReference userRef;
 
     private static SocketManager instance;
     private Socket socket;
@@ -75,6 +82,10 @@ public class SocketManager {
         connectionThread.start();
     }
 
+    /**
+     * 서버 소켓으로부터 수신되는 모든 메시지에 대한 처리 함수
+     * @param message 서버 소켓으로부터 수신되는 메시지
+     */
     private void handleMessage(String message) {
         // 메시지 처리
         String[] parts = message.split(":", 4);
@@ -112,18 +123,23 @@ public class SocketManager {
      */
     public void sendMessage(String message) {
         if (out != null) {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            user = FirebaseAuth.getInstance().getCurrentUser();
 
             if (user != null) {
                 String uid = user.getUid();
-                String userName = "unknown"; // TODO : DB에서 사용자 닉네임 가져오기
 
-                // 방 ID와 UID, 이름을 포함한 메시지 전송
-                String formattedMessage = roomId + ":" + uid + ":" + userName + ":" + message;
-                new Thread(() -> out.println(formattedMessage)).start();
+                fetchUserName(username -> {
+                    if (username == null) {
+                        // 계정 오류 등의 이유로 닉네임이 존재하지 않는 경우에 해당
+                        username = "(알 수 없음)";
+                    }
+                    // 방 ID와 UID, 이름을 포함한 메시지 전송
+                    String formattedMessage = roomId + ":" + uid + ":" + username + ":" + message;
+                    new Thread(() -> out.println(formattedMessage)).start();
+                });
             }
         } else {
-            // 메시지를 보낼 수 없는 경우 처리 로직
+            // TODO: 메시지를 전송할 수 없는 경우 예외 처리
         }
     }
 
@@ -147,5 +163,35 @@ public class SocketManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Firebase Realtime Database에서 사용자 이름을 가져오는 함수
+     * @param callback 사용자 이름을 가져온 후 실행할 콜백
+     */
+    private void fetchUserName(UsernameCallback callback) {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String uid = user.getUid();
+
+            // users > uid > name 노드 참조
+            userRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("name");
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String userName = dataSnapshot.getValue(String.class);
+                    callback.onCallback(userName);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // TODO: 읽기 실패 시 예외 처리
+                }
+            });
+        }
+    }
+
+    public interface UsernameCallback {
+        void onCallback(String username);
     }
 }
