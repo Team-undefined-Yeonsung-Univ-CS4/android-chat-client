@@ -7,7 +7,18 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
-        android:id="@+id/tvChat"
+        android:id="@+id/tv_user_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/chat_bubble_left"
@@ -15,6 +26,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginBottom="5dp"
         tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toBottomOf="@id/tv_user_nickname"
         app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

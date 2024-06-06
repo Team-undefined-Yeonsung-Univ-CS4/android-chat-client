@@ -18,7 +18,7 @@ public class ChatManager {
     private PrintWriter out;
     private BufferedReader in;
     private String roomId;
-    private static final String SERVER_IP = "192.168.219.153"; // 서버의 IP 주소
+    private static final String SERVER_IP = "192.168.219.163"; // 서버의 IP 주소
     private static final int SERVER_PORT = 9998; // 서버의 포트 번호
     private List<ChatMessage> allMessages = new ArrayList<>();
     private boolean isConnected = false;
@@ -34,7 +34,7 @@ public class ChatManager {
         return instance;
     }
 
-    public void connectToServer() {
+    public void connectToServer() { // 서버 연결
         if (isConnected) {
             return; // 이미 연결되어 있는 경우 새로운 연결을 생성하지 않음
         }
@@ -58,26 +58,29 @@ public class ChatManager {
         connectionThread.start();
     }
 
-    private void handleMessage(String message) {
+    private void handleMessage(String message) { //메시지 수신 기능
         // 메시지 처리
-        String[] parts = message.split(":", 3);
-        if (parts.length == 3) {
+        String[] parts = message.split(":", 4);
+        if (parts.length == 4) {
             String roomId = parts[0];
             String uid = parts[1];
-            String msg = parts[2];
-            ChatMessage chatMessage = new ChatMessage(roomId, uid, msg);
+            String userName = parts[2];
+            String msg = parts[3];
+            ChatMessage chatMessage = new ChatMessage(roomId, uid, userName, msg);
             allMessages.add(chatMessage); // 전체 메시지 리스트에 추가
-            ChatRoomActivity.handleMessage(roomId, uid, msg);
+            ChatRoomActivity.handleMessage(roomId, uid, userName, msg);
         }
     }
 
-    public void sendMessage(String message) {
+    public void sendMessage(String message) { // 메시지 송신 기능
         if (out != null) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
             if (user != null) {
                 String uid = user.getUid();
-                // 방 ID와 UID를 포함한 메시지 전송
-                String formattedMessage = roomId + ":" + uid + ":" + message;
+                String userName = "unknown"; //TODO : DB에서 사용자 닉네임 가져오기
+                // 방 ID와 UID, 이름을 포함한 메시지 전송
+                String formattedMessage = roomId + ":" + uid + ":" + userName + ":" + message;
                 new Thread(() -> out.println(formattedMessage)).start();
             }
         } else {
