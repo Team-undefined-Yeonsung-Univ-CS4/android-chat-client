@@ -55,12 +55,11 @@ public class LobbyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lobby);
 
         auth = FirebaseAuth.getInstance();
-        // fixme: conflict
-//        user = auth.getCurrentUser();
-//
-//        if (user != null) {
-//            SocketManager.getInstance().setLobbyActivity(this);
-//        }
+        user = auth.getCurrentUser();
+
+        if (user != null) {
+            SocketManager.getInstance().setLobbyActivity(this);
+        }
 
         toolbar = findViewById(R.id.toolbar);
         rvRoomList = findViewById(R.id.rv_room_list);

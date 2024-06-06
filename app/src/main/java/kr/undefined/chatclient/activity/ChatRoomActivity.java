@@ -47,7 +47,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat_room);
 
         instance = this;
-        uiHandler = new Handler(Looper.getMainLooper()); // FIXME: 용도 ?
+        uiHandler = new Handler(Looper.getMainLooper());
 
         toolbar = findViewById(R.id.toolbar);
         tvTitle = findViewById(R.id.tv_title);
@@ -83,14 +83,8 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         SocketManager.getInstance().setCurrentRoomId(roomId); // 인스턴스 생성 및 서버 연결
 
-        //프로필 클릭시 이벤트
         Context context = this; // Dialog 호출 시 필요
-        btnUserProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DialogManager.showParticipantsDialog(context);
-            }
-        });
+        btnUserProfile.setOnClickListener(view -> DialogManager.showParticipantsDialog(context));
     }
 
     @Override
