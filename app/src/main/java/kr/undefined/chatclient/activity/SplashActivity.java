@@ -15,8 +15,8 @@ import com.google.firebase.auth.FirebaseUser;
 import kr.undefined.chatclient.R;
 
 public class SplashActivity extends AppCompatActivity {
-    FirebaseAuth auth;
-    FirebaseUser user;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
