@@ -34,6 +34,7 @@ android {
 
 dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation( "com.google.gms:google-services:4.4.1")
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-storage")
     implementation(libs.appcompat)
@@ -41,6 +42,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

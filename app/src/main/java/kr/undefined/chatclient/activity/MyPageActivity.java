@@ -123,7 +123,7 @@ public class MyPageActivity extends AppCompatActivity {
     }
 
     private void uploadImage(Uri imageUri, String imageType) {
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference("Study/images/" + imageType + "_" + System.currentTimeMillis());
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference("Mypage/images/" + imageType + "_" + System.currentTimeMillis());
         storageReference.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
