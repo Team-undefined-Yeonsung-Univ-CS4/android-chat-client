@@ -116,8 +116,14 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "signInWithEmail: success");
                     Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
-
                     it = new Intent(LoginActivity.this, LobbyActivity.class);
+
+                    FirebaseUser user = auth.getCurrentUser();
+                    if (user != null) {
+                        String Uid = user.getUid();
+                        it.putExtra("UID",Uid);
+                    }
+
                     startActivity(it);
                     finish();
                 } else {

@@ -114,16 +114,25 @@ public class MyPageActivity extends AppCompatActivity {
     );
 
     private void uploadImages() {
-        if (profileImgUri != null) {
-            uploadImage(profileImgUri, "profile");
+        Intent intent = getIntent();
+
+        if (intent != null) {
+            String userId = getIntent().getStringExtra("UID");
+            if (userId != null) {
+                if (profileImgUri != null) {
+                    uploadImage(profileImgUri, "profile", userId);
+                }
+                if (bannerImgUri != null) {
+                    uploadImage(bannerImgUri, "banner", userId);
+                }
+
+            }
         }
-        if (bannerImgUri != null) {
-            uploadImage(bannerImgUri, "banner");
-        }
+
     }
 
-    private void uploadImage(Uri imageUri, String imageType) {
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference("Mypage/images/" + imageType + "_" + System.currentTimeMillis());
+    private void uploadImage(Uri imageUri, String imageType, String Uid) {
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference("Mypage/images/" + imageType + "/" + Uid + "_" + System.currentTimeMillis());
         storageReference.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {

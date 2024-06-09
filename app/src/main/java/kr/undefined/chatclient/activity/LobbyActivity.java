@@ -99,6 +99,8 @@ public class LobbyActivity extends AppCompatActivity {
 
         btnUserProfileImg.setOnClickListener(view -> {
             it = new Intent(getApplicationContext(), MyPageActivity.class);
+            String userId = getIntent().getStringExtra("UID");
+            it.putExtra("UID",userId);
             startActivity(it);
         });
 
