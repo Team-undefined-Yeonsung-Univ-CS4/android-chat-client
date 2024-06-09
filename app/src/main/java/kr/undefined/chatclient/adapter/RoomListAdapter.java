@@ -12,21 +12,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import kr.undefined.chatclient.R;
-import kr.undefined.chatclient.item.RoomListItem;
+import kr.undefined.chatclient.item.RoomItem;
 
 public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHolder> {
-    private ArrayList<RoomListItem> itemList;
+    private ArrayList<RoomItem> itemList;
     private OnItemClickListener onItemClickListener;
 
     public interface OnItemClickListener {
-        void onItemClick(RoomListItem item);
+        void onItemClick(RoomItem item);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.onItemClickListener = listener;
     }
 
-    public RoomListAdapter(ArrayList<RoomListItem> itemList) {
+    public RoomListAdapter(ArrayList<RoomItem> itemList) {
         this.itemList = itemList;
     }
 
@@ -48,7 +48,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull RoomListAdapter.ViewHolder holder, int position) {
-        RoomListItem item = itemList.get(position);
+        RoomItem item = itemList.get(position);
         holder.tvTitle.setText(item.getTitle());
         holder.tvMembers.setText(item.getMembers());
     }

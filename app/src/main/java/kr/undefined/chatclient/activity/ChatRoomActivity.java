@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -23,8 +22,8 @@ import java.util.List;
 
 import kr.undefined.chatclient.R;
 import kr.undefined.chatclient.adapter.ChatRoomAdapter;
-import kr.undefined.chatclient.manager.SocketManager;
 import kr.undefined.chatclient.manager.ChatMessage;
+import kr.undefined.chatclient.manager.SocketManager;
 import kr.undefined.chatclient.util.DialogManager;
 
 public class ChatRoomActivity extends AppCompatActivity {
@@ -46,6 +45,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_room);
 
+        Context context = this;
         instance = this;
         uiHandler = new Handler(Looper.getMainLooper());
 
@@ -81,10 +81,9 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         btnSend.setOnClickListener(v -> sendMessage());
 
-        SocketManager.getInstance().setCurrentRoomId(roomId); // 인스턴스 생성 및 서버 연결
+        SocketManager.getInstance().setCurrentRoomId(roomId);
 
-        Context context = this; // Dialog 호출 시 필요
-        btnUserProfile.setOnClickListener(view -> DialogManager.showParticipantsDialog(context));
+        btnUserProfile.setOnClickListener(view -> DialogManager.showMiniProfileDialog(context));
     }
 
     @Override
@@ -105,6 +104,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     }
 
     public static void handleMessage(String roomId, String uid, String userName, String messageText) {
+        uiHandler = new Handler();
         uiHandler.post(() -> {
             if (instance != null && instance.roomId.equals(roomId)) {
                 ChatMessage message = new ChatMessage(roomId, uid, userName, messageText);
@@ -114,8 +114,12 @@ public class ChatRoomActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 전체 채팅 리스트에서 방 번호에 맞는 채팅 내역을 필터링하여 반환하는 함수
+     * @param roomId 방 번호
+     * @return 해당 채팅방의 모든 채팅 기록
+     */
     private List<ChatMessage> loadChatHistory(String roomId) {
-        // 전체 채팅 리스트에서 방 번호에 맞는 채팅 내역을 필터링하여 반환
         List<ChatMessage> allMessages = SocketManager.getInstance().getAllMessages();
         List<ChatMessage> roomMessages = new ArrayList<>();
         for (ChatMessage message : allMessages) {
@@ -126,6 +130,3 @@ public class ChatRoomActivity extends AppCompatActivity {
         return roomMessages;
     }
 }
-
-
-

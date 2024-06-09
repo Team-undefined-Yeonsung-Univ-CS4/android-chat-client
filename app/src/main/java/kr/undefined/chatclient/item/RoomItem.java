@@ -1,11 +1,11 @@
 package kr.undefined.chatclient.item;
 
-public class RoomListItem {
+public class RoomItem {
     private String roomId;
     private String title;
     private String members;
 
-    public RoomListItem(String roomId, String title, String members) {
+    public RoomItem(String roomId, String title, String members) {
         this.roomId = roomId;
         this.title = title;
         this.members = members;
