@@ -24,8 +24,6 @@ import kr.undefined.chatclient.manager.SocketManager;
 import kr.undefined.chatclient.util.DialogManager;
 
 public class LobbyActivity extends AppCompatActivity {
-    private static final String TAG = "SocketNetworkCheck";
-
     private FirebaseAuth auth;
     private FirebaseUser user;
 

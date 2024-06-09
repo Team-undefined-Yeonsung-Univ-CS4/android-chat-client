@@ -67,6 +67,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
+        // FIXME: 방 제목 참조 & 현재 인원 수 실시간 업데이트
         tvTitle.setText("고독한 방");
         tvNumOfPeople.setText("1 / 8");
 
@@ -96,7 +97,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         if (!messageText.isEmpty()) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
-                String uid = user.getUid();
+//                String uid = user.getUid();
                 etMessageInput.setText("");
                 SocketManager.getInstance().sendMessage(messageText);
             }
@@ -104,7 +105,6 @@ public class ChatRoomActivity extends AppCompatActivity {
     }
 
     public static void handleMessage(String roomId, String uid, String userName, String messageText) {
-        uiHandler = new Handler();
         uiHandler.post(() -> {
             if (instance != null && instance.roomId.equals(roomId)) {
                 ChatMessage message = new ChatMessage(roomId, uid, userName, messageText);

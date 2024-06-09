@@ -2,7 +2,6 @@ package kr.undefined.chatclient.util;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,7 +16,6 @@ import kr.undefined.chatclient.R;
 import kr.undefined.chatclient.manager.SocketManager;
 
 public class DialogManager  {
-    private static final String TAG = "SocketNetworkCheck";
 
     public static void showMiniProfileDialog(Context context) {
         // 다이얼로그 설정
@@ -46,8 +44,8 @@ public class DialogManager  {
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_create_room, null);
         builder.setView(dialogView);
 
-        EditText etTitle = dialogView.findViewById(R.id.et_title);
-        EditText etPassword = dialogView.findViewById(R.id.et_password);
+        EditText etTitle = dialogView.findViewById(R.id.et_title); // TODO: 방 정보 구분 문자를 통한 서버 인젝션 방어 처리 추가
+        EditText etPassword = dialogView.findViewById(R.id.et_password); // TODO: 방 생성 프로세스에서 password 처리 추가, 인젝션 방어 처리 추가
         Spinner spMembers = dialogView.findViewById(R.id.sp_members);
         AppCompatButton btnBack = dialogView.findViewById(R.id.btn_back);
         AppCompatButton btnCreate = dialogView.findViewById(R.id.btn_create);
@@ -63,7 +61,6 @@ public class DialogManager  {
         btnBack.setOnClickListener(view -> dialog.dismiss());
 
         btnCreate.setOnClickListener(view -> {
-            Log.d(TAG, "showCreateRoomDialog: has called");
             String title = etTitle.getText().toString().trim();
 
             // 방 제목이 비어있거나 공백만 포함된 경우 지정된 제목을 랜덤 할당
@@ -90,7 +87,6 @@ public class DialogManager  {
 
             // "statusCode:title:members"를 소켓 서버로 전송
             String message = "109:" + title + ":" + membersCnt;
-            Log.d(TAG, "showCreateRoomDialog's message: "+ message);
             SocketManager.getInstance().sendCreateRoomMessage(message);
         });
     }

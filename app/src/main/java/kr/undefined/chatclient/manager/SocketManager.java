@@ -1,6 +1,12 @@
 package kr.undefined.chatclient.manager;
 
-import android.util.Log;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,21 +16,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import kr.undefined.chatclient.activity.ChatRoomActivity;
 import kr.undefined.chatclient.activity.LobbyActivity;
 import kr.undefined.chatclient.item.RoomItem;
 
 public class SocketManager {
-    private static final String TAG = "SocketNetworkCheck";
-
     private static final String SERVER_IP = "172.30.1.47";
     private static final int SERVER_PORT = 9998;
 
@@ -92,22 +88,24 @@ public class SocketManager {
      * @param message 서버 소켓으로부터 수신되는 메시지
      */
     private void handleMessage(String message) {
-        // 메시지 처리
-        String[] parts = message.split(":", 4);
-
-        // FIXME: 각기 다른 소켓 메시지 처리에 대한 구분을 상태코드로 식별하도록 수정
+        // 동시 접속자 수
         if (message.startsWith("USER_COUNT")) {
-            Log.d(TAG, "USER_COUNT: "+ message);
             String userCnt = message.split(":")[1];
             lobbyActivity.updateUserCount(userCnt);
-        } else if (message.startsWith("ROOM_LIST")) {
-            Log.d(TAG, "ROOM_LIST: "+ message);
+        }
+        // 방 목록
+        else if (message.startsWith("ROOM_LIST")) {
             handleRoomListMessage(message);
-        } else if (parts.length == 4) {
+        }
+        // 채팅방 메시지
+        // FIXME: 상태 코드 "CHAT_MESSAGE"를 식별하는 로직 추가
+        else {
+            String[] parts = message.split(":", 4);
             String roomId = parts[0];
             String uid = parts[1];
             String userName = parts[2];
             String msg = parts[3];
+
             ChatMessage chatMessage = new ChatMessage(roomId, uid, userName, msg);
             allMessages.add(chatMessage); // 전체 메시지 리스트에 추가
             ChatRoomActivity.handleMessage(roomId, uid, userName, msg);
@@ -219,8 +217,6 @@ public class SocketManager {
     }
 
     private void handleRoomListMessage(String message) {
-        Log.d(TAG, "handleRoomListMessage: received message: " + message);
-
         // 방마다 구분하기 위해 수신코드(상태코드) 부분은 제거
         String roomListData = message.substring("ROOM_LIST:".length());
 
@@ -230,14 +226,11 @@ public class SocketManager {
         List<RoomItem> roomList = new ArrayList<>();
         for (String roomEntry : roomEntries) {
             String[] roomDetails = roomEntry.split(",");
-            if (roomDetails.length == 3) {
-                String roomId = roomDetails[0];
-                String title = roomDetails[1];
-                String members = roomDetails[2];
-                roomList.add(new RoomItem(roomId, title, members));
-            } else {
-                Log.e(TAG, "Invalid room details format: " + roomEntry);
-            }
+
+            String roomId = roomDetails[0];
+            String title = roomDetails[1];
+            String members = roomDetails[2];
+            roomList.add(new RoomItem(roomId, title, members));
         }
 
         if (lobbyActivity != null) {
