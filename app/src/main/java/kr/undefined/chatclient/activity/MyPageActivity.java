@@ -21,6 +21,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -53,7 +54,6 @@ public class MyPageActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page);
-
         auth = FirebaseAuth.getInstance();
         FirebaseDatabase db = FirebaseDatabase.getInstance();
 
@@ -86,6 +86,7 @@ public class MyPageActivity extends AppCompatActivity {
         });
         btnSave.setOnClickListener(view -> uploadImages());
         btnSignOut.setOnClickListener(view -> signOut());
+        loadImages();
     }
 
     private void selectImage() {
@@ -130,9 +131,37 @@ public class MyPageActivity extends AppCompatActivity {
         }
 
     }
+    private void loadImages() {
+        //로그인 후 정보를 인텐트로 넘기기 때문에 로그인 과정이 필수
+        Intent intent = getIntent();
+        if (intent != null) {
+            String userId = intent.getStringExtra("UID");
+            if (userId != null) {
+                loadImageFromFirebase("profile", userId, ivProfileImg);
+                loadImageFromFirebase("banner", userId, ivBannerImg);
+            }
+        }
+    }
+    private void loadImageFromFirebase(String imageType, String userId, ImageView imageView) {
+        StorageReference storageReference = FirebaseStorage.getInstance()
+                .getReference("Mypage/images/" + imageType + "/" + userId);
+
+        int placeholderImage = (imageType.equals("profile")) ? R.drawable.ic_user : R.drawable.bn_gitjump;
+
+        storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
+            Glide.with(MyPageActivity.this)
+                    .load(uri)
+                    .into(imageView);
+            ivBannerImg.setBackground(null);
+        }).addOnFailureListener(exception -> {
+            Glide.with(MyPageActivity.this)
+                    .load(placeholderImage)
+                    .into(imageView);
+        });
+    }
 
     private void uploadImage(Uri imageUri, String imageType, String Uid) {
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference("Mypage/images/" + imageType + "/" + Uid + "_" + System.currentTimeMillis());
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference("Mypage/images/" + imageType + "/" + Uid);
         storageReference.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
