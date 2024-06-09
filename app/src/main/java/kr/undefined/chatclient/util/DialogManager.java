@@ -10,6 +10,8 @@ import android.widget.Spinner;
 
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.Random;
 
 import kr.undefined.chatclient.R;
@@ -39,7 +41,12 @@ public class DialogManager  {
         });
     }
 
-    public static void showCreateRoomDialog(Context context) {
+    /**
+     * 방 생성 다이얼로그를 표시하는 메서드
+     * @param context 현재 컨텍스트
+     * @param userId 방 생성 요청자의 UID
+     */
+    public static void showCreateRoomDialog(Context context, String userId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_create_room, null);
         builder.setView(dialogView);
@@ -86,8 +93,10 @@ public class DialogManager  {
             // TODO: password 처리 추가
 
             // "statusCode:title:members"를 소켓 서버로 전송
-            String message = "109:" + title + ":" + membersCnt;
-            SocketManager.getInstance().sendCreateRoomMessage(message);
+            String message = "109:" + title + ":" + membersCnt + ":" + userId;
+            SocketManager.getInstance().sendCreateRoomMessage(message, userId);
+
+            dialog.dismiss();
         });
     }
 }

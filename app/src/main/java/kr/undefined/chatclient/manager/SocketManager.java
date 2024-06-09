@@ -33,6 +33,7 @@ public class SocketManager {
     private BufferedReader in;
 
     private String roomId;
+    private String roomManangerId; // 방장의 UID
 
     private List<ChatMessage> allMessages = new ArrayList<>();
     private boolean isConnected = false;
@@ -127,8 +128,11 @@ public class SocketManager {
     /**
      * 방 생성 요청에 대한 소켓 메시지 전송 함수
      * @param message 채팅방 정보가 담긴 메시지
+     * @param userId 방장의 UID
      */
-    public void sendCreateRoomMessage(String message) {
+    public void sendCreateRoomMessage(String message, String userId) {
+        roomManangerId = userId;
+
         new Thread(() -> {
             if (out != null) {
                 out.println(message);
@@ -216,6 +220,10 @@ public class SocketManager {
         void onCallback(String username);
     }
 
+    /**
+     * 서버로부터 수신된 방 목록 메시지에 대한 처리 메서드
+     * @param message 서버로부터 수신된 방 목록 메시지
+     */
     private void handleRoomListMessage(String message) {
         // 방마다 구분하기 위해 수신코드(상태코드) 부분은 제거
         String roomListData = message.substring("ROOM_LIST:".length());
@@ -235,6 +243,14 @@ public class SocketManager {
 
         if (lobbyActivity != null) {
             lobbyActivity.setRoomList(roomList);
+
+            // 방 목록에서 가장 최근에 생성된 방 ID 가져오기
+            if (!roomList.isEmpty()) {
+                String latestRoomId = roomList.get(0).getRoomId();
+
+                // 방 생성 요청을 한 사용자를 해당 채팅방으로 이동 처리
+                lobbyActivity.startChatRoomActivity(latestRoomId);
+            }
         }
     }
 }

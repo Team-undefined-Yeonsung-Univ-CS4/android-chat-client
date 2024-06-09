@@ -103,9 +103,7 @@ public class LobbyActivity extends AppCompatActivity {
             // TODO: 방 찾기 다이얼로그 생성
         });
 
-        btnCreatingRoom.setOnClickListener(view -> {
-            DialogManager.showCreateRoomDialog(this);
-        });
+        btnCreatingRoom.setOnClickListener(view -> DialogManager.showCreateRoomDialog(this, user.getUid()));
 
         // 서버 연결
         SocketManager.getInstance().connectToServer();
@@ -126,5 +124,15 @@ public class LobbyActivity extends AppCompatActivity {
             roomList.addAll(updatedRooms);
             roomListAdapter.notifyDataSetChanged();
         });
+    }
+
+    /**
+     * 채팅방 고유 ID를 기준으로 해당 방으로 이동시키는 메서드
+     * @param roomId 채팅방 고유 ID
+     */
+    public void startChatRoomActivity(String roomId) {
+        Intent intent = new Intent(this, ChatRoomActivity.class);
+        intent.putExtra("roomId", roomId);
+        startActivity(intent);
     }
 }
