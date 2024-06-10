@@ -175,31 +175,29 @@ public class MyPageActivity extends AppCompatActivity {
     }
 
     private void loadUserData() {
-        Intent intent = getIntent();
-        if (intent != null) {
-            String userId = intent.getStringExtra("UID");
-            if (userId != null) {
-                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
-                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            String name = snapshot.child("name").getValue(String.class);
-                            if (name != null) {
-                                etNickName.setText(name);
-                            }
-                            String statusMsg = snapshot.child("statusMsg").getValue(String.class);
-                            if (statusMsg != null) {
-                                etStatusMsg.setText(statusMsg);
-                            }
+        user = auth.getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        String name = snapshot.child("name").getValue(String.class);
+                        if (name != null) {
+                            etNickName.setText(name);
+                        }
+                        String statusMsg = snapshot.child("statusMsg").getValue(String.class);
+                        if (statusMsg != null) {
+                            etStatusMsg.setText(statusMsg);
                         }
                     }
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
-                });
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
         }
     }
 
@@ -229,32 +227,24 @@ public class MyPageActivity extends AppCompatActivity {
     );
 
     private void uploadImages() {
-        Intent intent = getIntent();
-
-        if (intent != null) {
-            String userId = getIntent().getStringExtra("UID");
-            if (userId != null) {
-                if (profileImgUri != null) {
-                    uploadImage(profileImgUri, "profile", userId);
-                }
-                if (bannerImgUri != null) {
-                    uploadImage(bannerImgUri, "banner", userId);
-                }
-
+        user = auth.getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+            if (profileImgUri != null) {
+                uploadImage(profileImgUri, "profile", userId);
+            }
+            if (bannerImgUri != null) {
+                uploadImage(bannerImgUri, "banner", userId);
             }
         }
-
     }
 
     private void loadImages() {
-        //로그인 후 정보를 인텐트로 넘기기 때문에 로그인 과정이 필수
-        Intent intent = getIntent();
-        if (intent != null) {
-            String userId = intent.getStringExtra("UID");
-            if (userId != null) {
-                loadImageFromFirebase("profile", userId, ivProfileImg);
-                loadImageFromFirebase("banner", userId, ivBannerImg);
-            }
+        user = auth.getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+            loadImageFromFirebase("profile", userId, ivProfileImg);
+            loadImageFromFirebase("banner", userId, ivBannerImg);
         }
     }
 

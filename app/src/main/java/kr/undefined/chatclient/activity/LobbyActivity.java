@@ -107,12 +107,6 @@ public class LobbyActivity extends AppCompatActivity {
 
         btnUserProfileImg.setOnClickListener(view -> {
             it = new Intent(getApplicationContext(), MyPageActivity.class);
-
-            // fixme: uid를 Firebase 객체에서 뽑을 수 있는데 왜 intent로 보내주는 것인지 ?
-            String userId = getIntent().getStringExtra("UID");
-            it.putExtra("UID", userId);
-            // fixme end
-
             startActivity(it);
         });
 
