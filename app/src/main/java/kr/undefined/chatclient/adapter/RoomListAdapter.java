@@ -9,6 +9,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 import kr.undefined.chatclient.R;
@@ -51,6 +58,10 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
         RoomItem item = itemList.get(position);
         holder.tvTitle.setText(item.getTitle());
         holder.tvMembers.setText(item.getMembers());
+
+        String roomUid = item.getUid();
+
+        loadProfileImage(roomUid, holder.ivManagerProfile);
     }
 
     @Override
@@ -70,4 +81,28 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.ViewHo
             ivPublic = itemView.findViewById(R.id.iv_public);
         }
     }
+    private void loadProfileImage(String uid, ImageView imageView) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(uid);
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
+                    if (profileImageUrl != null) {
+                        Glide.with(imageView.getContext())
+                                .load(profileImageUrl)
+                                .placeholder(R.drawable.ic_user)
+                                .into(imageView);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 }
