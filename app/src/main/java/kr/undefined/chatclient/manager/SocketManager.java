@@ -1,5 +1,7 @@
 package kr.undefined.chatclient.manager;
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,7 +23,7 @@ import kr.undefined.chatclient.activity.LobbyActivity;
 import kr.undefined.chatclient.item.RoomItem;
 
 public class SocketManager {
-    private static final String SERVER_IP = "172.30.1.47";
+    private static final String SERVER_IP = "192.168.219.149";
     private static final int SERVER_PORT = 9998;
 
     private FirebaseUser user;
@@ -225,31 +227,40 @@ public class SocketManager {
      * @param message 서버로부터 수신된 방 목록 메시지
      */
     private void handleRoomListMessage(String message) {
-        // 방마다 구분하기 위해 수신코드(상태코드) 부분은 제거
-        String roomListData = message.substring("ROOM_LIST:".length());
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null){
+            String uid = user.getUid();
+            // 방마다 구분하기 위해 수신코드(상태코드) 부분은 제거
+            String roomListData = message.substring("ROOM_LIST:".length());
 
-        // 각 방 정보를 ';'로 구분하여 배열로 분리
-        String[] roomEntries = roomListData.split(";");
+            // 각 방 정보를 ';'로 구분하여 배열로 분리
+            String[] roomEntries = roomListData.split(";");
 
-        List<RoomItem> roomList = new ArrayList<>();
-        for (String roomEntry : roomEntries) {
-            String[] roomDetails = roomEntry.split(",");
+            List<RoomItem> roomList = new ArrayList<>();
+            for (String roomEntry : roomEntries) {
+                String[] roomDetails = roomEntry.split(",");
 
-            String roomId = roomDetails[0];
-            String title = roomDetails[1];
-            String members = roomDetails[2];
-            roomList.add(new RoomItem(roomId, title, members));
-        }
+                String roomId = roomDetails[0];
+                String title = roomDetails[1];
+                String members = roomDetails[2];
+                String roomUid = roomDetails[3];
+                roomList.add(new RoomItem(roomId, title, members, roomUid));
+            }
 
-        if (lobbyActivity != null) {
-            lobbyActivity.setRoomList(roomList);
+            if (lobbyActivity != null) {
+                lobbyActivity.setRoomList(roomList);
 
-            // 방 목록에서 가장 최근에 생성된 방 ID 가져오기
-            if (!roomList.isEmpty()) {
-                String latestRoomId = roomList.get(0).getRoomId();
+                // 방 목록에서 가장 최근에 생성된 방 ID 가져오기
+                if (!roomList.isEmpty()) {
+                    String latestRoomId = roomList.get(0).getRoomId();
+                    String latestUId = roomList.get(0).getUid();
 
-                // 방 생성 요청을 한 사용자를 해당 채팅방으로 이동 처리
-                lobbyActivity.startChatRoomActivity(latestRoomId);
+
+                    if(uid.equals(latestUId)){//uid가 같은지 확인
+                        // 방 생성 요청을 한 사용자를 해당 채팅방으로 이동 처리
+                        lobbyActivity.startChatRoomActivity(latestRoomId);
+                    }
+                }
             }
         }
     }
