@@ -105,13 +105,6 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
                     it = new Intent(LoginActivity.this, LobbyActivity.class);
 
-                    // FIXME: uid는 어디에서든 추출할 수 있으므로 intent로 보내주지 않아도 됌
-                    FirebaseUser user = auth.getCurrentUser();
-                    if (user != null) {
-                        String Uid = user.getUid();
-                        it.putExtra("UID",Uid);
-                    }
-                    // FIXME END
 
                     startActivity(it);
                     finish();
