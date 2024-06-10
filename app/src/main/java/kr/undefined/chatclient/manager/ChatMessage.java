@@ -5,12 +5,14 @@ public class ChatMessage {
     private String uid;
     private String message;
     private String userName;
+    private String currentTime;
 
-    public ChatMessage(String roomId, String uid, String userName, String message) {
+    public ChatMessage(String roomId, String uid, String userName, String message, String currentTime) {
         this.roomId = roomId;
         this.uid = uid;
         this.message = message;
         this.userName = userName;
+        this.currentTime = currentTime;
     }
 
     public String getRoomId() {
@@ -39,4 +41,8 @@ public class ChatMessage {
     }
 
     public  void setUserName(String userName) { this.userName = userName; }
+
+    public String getCurrentTime() { return currentTime; }
+
+    public void setCurrentTime(String currentTime) { this.currentTime = currentTime; }
 }

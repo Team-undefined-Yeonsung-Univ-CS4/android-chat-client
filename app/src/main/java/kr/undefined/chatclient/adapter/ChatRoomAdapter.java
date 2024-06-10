@@ -54,10 +54,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ChatMessage chatMessage = chatList.get(position);
         String messageText = chatMessage.getMessage(); // 채팅 메시지를 가져옴
         String userName = chatMessage.getUserName(); // 사용자 닉네임을 가져옴
+        String timeText = chatMessage.getCurrentTime(); // 시간 정보 가져오기
         if (holder.getItemViewType() == VIEW_TYPE_MY_MESSAGE) {
-            ((MyMessageViewHolder) holder).bind(messageText);
+            ((MyMessageViewHolder) holder).bind(messageText, timeText);
         } else {
-            ((OtherMessageViewHolder) holder).bind(messageText, userName);
+            ((OtherMessageViewHolder) holder).bind(messageText, userName, timeText);
         }
     }
 
@@ -73,30 +74,36 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public static class MyMessageViewHolder extends RecyclerView.ViewHolder {
         TextView messageTextView;
+        TextView timeTextView;
 
         public MyMessageViewHolder(@NonNull View itemView) {
             super(itemView);
             messageTextView = itemView.findViewById(R.id.tv_chat);
+            timeTextView = itemView.findViewById(R.id.tv_time);
         }
 
-        public void bind(String message) {
+        public void bind(String message, String time) {
             messageTextView.setText(message);
+            timeTextView.setText(time);
         }
     }
 
     public static class OtherMessageViewHolder extends RecyclerView.ViewHolder {
         TextView messageTextView;
         TextView userNameTextView;
+        TextView timeTextView;
 
         public OtherMessageViewHolder(@NonNull View itemView) {
             super(itemView);
             messageTextView = itemView.findViewById(R.id.tv_chat);
             userNameTextView = itemView.findViewById((R.id.tv_user_nickname));
+            timeTextView = itemView.findViewById(R.id.tv_time);
         }
 
-        public void bind(String message, String username) {
+        public void bind(String message, String username, String time) {
             messageTextView.setText(message);
             userNameTextView.setText(username);
+            timeTextView.setText(time);
         }
     }
 }

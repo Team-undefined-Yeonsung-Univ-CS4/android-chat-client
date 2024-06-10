@@ -15,7 +15,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import kr.undefined.chatclient.activity.ChatRoomActivity;
@@ -108,10 +112,13 @@ public class SocketManager {
             String uid = parts[1];
             String userName = parts[2];
             String msg = parts[3];
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            String currentTime = sdf.format(calendar.getTime());
 
-            ChatMessage chatMessage = new ChatMessage(roomId, uid, userName, msg);
+            ChatMessage chatMessage = new ChatMessage(roomId, uid, userName, msg, currentTime);
             allMessages.add(chatMessage); // 전체 메시지 리스트에 추가
-            ChatRoomActivity.handleMessage(roomId, uid, userName, msg);
+            ChatRoomActivity.handleMessage(roomId, uid, userName, msg, currentTime);
         }
     }
 
