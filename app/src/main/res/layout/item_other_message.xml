@@ -29,4 +29,14 @@
         app:layout_constraintTop_toBottomOf="@id/tv_user_nickname"
         app:layout_constraintStart_toStartOf="parent"/>
 
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="12sp"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintStart_toEndOf="@+id/tv_chat"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_chat"
+        tools:text="12:00 PM" />
 </androidx.constraintlayout.widget.ConstraintLayout>

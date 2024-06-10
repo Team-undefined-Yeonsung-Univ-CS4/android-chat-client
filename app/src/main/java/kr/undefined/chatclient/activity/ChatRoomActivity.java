@@ -104,10 +104,10 @@ public class ChatRoomActivity extends AppCompatActivity {
         }
     }
 
-    public static void handleMessage(String roomId, String uid, String userName, String messageText) {
+    public static void handleMessage(String roomId, String uid, String userName, String messageText, String currentTime) {
         uiHandler.post(() -> {
             if (instance != null && instance.roomId.equals(roomId)) {
-                ChatMessage message = new ChatMessage(roomId, uid, userName, messageText);
+                ChatMessage message = new ChatMessage(roomId, uid, userName, messageText, currentTime);
                 instance.chatAdapter.addMessage(message);
                 instance.rvChatList.scrollToPosition(instance.chatAdapter.getItemCount() - 1);
             }
