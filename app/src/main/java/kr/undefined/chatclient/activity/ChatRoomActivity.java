@@ -10,13 +10,20 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -35,6 +42,8 @@ public class ChatRoomActivity extends AppCompatActivity {
     ImageButton btnFunction, btnSend, btnUserProfile;
     FrameLayout btnParticipant;
     ChatRoomAdapter chatAdapter;
+    private FirebaseUser currentUser;
+    private FirebaseAuth auth;
 
     private static ChatRoomActivity instance;
     private static Handler uiHandler;
@@ -88,6 +97,13 @@ public class ChatRoomActivity extends AppCompatActivity {
                 DialogManager.showParticipantsDialog(context);
             }
         });
+
+
+
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+
+        loadProfileImage();
     }
 
     private void sendMessage() {
@@ -110,6 +126,30 @@ public class ChatRoomActivity extends AppCompatActivity {
                 ChatMessage message = new ChatMessage(uid, messageText);
                 instance.chatAdapter.addMessage(message);
                 instance.rvChatList.scrollToPosition(instance.chatAdapter.getItemCount() - 1);
+            }
+        });
+    }
+
+    private void loadProfileImage() {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
+                    if (profileImageUrl != null) {
+                        Glide.with(ChatRoomActivity.this)
+                                .load(profileImageUrl)
+                                .placeholder(R.drawable.ic_user)
+                                .into(btnUserProfile);
+                        btnUserProfile.setBackground(null);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
             }
         });
     }
