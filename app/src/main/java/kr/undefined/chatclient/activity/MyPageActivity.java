@@ -155,7 +155,6 @@ public class MyPageActivity extends AppCompatActivity {
 
                         String currentStatusMsg = snapshot.child("statusMsg").getValue(String.class);
                         if (!newStatusMsg.isEmpty() && (currentStatusMsg == null || !currentStatusMsg.equals(newStatusMsg))) {
-                            needsUpdate = true;
                             userRef.child("statusMsg").setValue(newStatusMsg).addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(MyPageActivity.this, "상태 메시지 업데이트 성공", Toast.LENGTH_SHORT).show();
@@ -163,10 +162,6 @@ public class MyPageActivity extends AppCompatActivity {
                                     Toast.makeText(MyPageActivity.this, "상태 메시지 업데이트 실패", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                        }
-
-                        if (!needsUpdate) {
-                            Toast.makeText(MyPageActivity.this, "변경된 내용이 없습니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -272,13 +267,11 @@ public class MyPageActivity extends AppCompatActivity {
         storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
             Glide.with(MyPageActivity.this)
                     .load(uri)
-                    .centerCrop()//이미지 꽉차게 설정
                     .into(imageView);
             ivBannerImg.setBackground(null);
         }).addOnFailureListener(exception -> {
             Glide.with(MyPageActivity.this)
                     .load(placeholderImage)
-                    .centerCrop()
                     .into(imageView);
         });
     }

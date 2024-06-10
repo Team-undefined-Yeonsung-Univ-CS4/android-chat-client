@@ -36,6 +36,7 @@
         android:layout_width="0dp"
         android:layout_height="140dp"
         android:background="@drawable/bn_gitjump"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
