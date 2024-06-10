@@ -94,7 +94,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         btnUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogManager.showParticipantsDialog(context);
+                fetchUserInfoAndShowDialog();
             }
         });
 
@@ -153,5 +153,28 @@ public class ChatRoomActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void fetchUserInfoAndShowDialog() {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
+                    String nickname = snapshot.child("name").getValue(String.class);
+                    String statusMessage = snapshot.child("statusMsg").getValue(String.class);
+
+                    // 다이얼로그 호출
+                    DialogManager.showParticipantsDialog(ChatRoomActivity.this, profileImageUrl, nickname, statusMessage);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
 }
 
