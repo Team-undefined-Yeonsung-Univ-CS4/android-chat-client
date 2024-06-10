@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Random;
+
 import kr.undefined.chatclient.R;
 import kr.undefined.chatclient.manager.SocketManager;
 import kr.undefined.chatclient.util.UtilManager;
@@ -73,7 +75,7 @@ public class MyPageActivity extends AppCompatActivity {
         rootLayout.setOnClickListener(view -> UtilManager.clearFocus(this));
         btnEditBanner.setOnClickListener(view -> editBannerImg());
         btnEditProfile.setOnClickListener(view -> editProfileImg());
-        btnAliasWizard.setOnClickListener(view -> createRandomAlias());
+        btnAliasWizard.setOnClickListener(view -> etNickName.setText(createRandomAlias()));
         btnSave.setOnClickListener(view -> requestUpdateUserData());
         btnSignOut.setOnClickListener(view -> signOut());
     }
@@ -97,8 +99,18 @@ public class MyPageActivity extends AppCompatActivity {
     /**
      * 랜덤 닉네임 생성기
      */
-    private void createRandomAlias() {
-        // TODO: 형용사 + 명사 (10 x 10) 랜덤 닉네임 생성
+    private String createRandomAlias() {
+        String[] adjectives = { "불타는", "차가운", "뜨거운", "냉소적인", "흥분되는", "편안한", "끔찍한", "화끈한", "그만하고싶은", "어두컴컴한" };
+        String[] languages = { "자바", "파이썬", "자바스크립트", "C++", "노드", "스위프트", "코틀린", "리액트", "스프링", "타입스크립트" };
+
+        Random random = new Random();
+
+        String randomAdjective = adjectives[random.nextInt(adjectives.length)];
+        String randomLanguage = languages[random.nextInt(languages.length)];
+
+        String randomAlias = randomAdjective + randomLanguage;
+
+        return randomAlias;
     }
 
     /**
