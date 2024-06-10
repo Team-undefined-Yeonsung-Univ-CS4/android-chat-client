@@ -130,9 +130,9 @@ public class MyPageActivity extends AppCompatActivity {
         String newNickName = etNickName.getText().toString();
         String newStatusMsg = etStatusMsg.getText().toString();
 
-        Intent intent = getIntent();
-        if (intent != null) {
-            String userId = intent.getStringExtra("UID");
+        user = auth.getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
             if (userId != null) {
                 DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
