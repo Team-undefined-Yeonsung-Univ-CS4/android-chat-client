@@ -3,16 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical"
-    android:background="#77000000">
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:orientation="vertical"
-        android:padding="90dp"
-        android:background="@drawable/bg_rounded_edittext">
+        android:background="@drawable/bg_rounded_dialog">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
@@ -29,10 +27,11 @@
                     android:id="@+id/btn_back"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="0.5"
                     android:gravity="center"
                     android:text="X"
                     android:textSize="20sp"
+                    android:padding="5dp"
                     android:background="@drawable/bg_rounded_edittext"/>
 
 
@@ -49,11 +48,11 @@
 
             <ImageView
                 android:id="@+id/img_profile"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
                 android:src="@drawable/ic_user"
                 android:layout_gravity="center"
-                android:layout_marginTop="30dp"/>
+                android:layout_marginTop="5dp"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -62,11 +61,12 @@
             android:layout_weight="2"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/tv_user_nickname"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/nickname"
                 android:gravity="center"
-                android:textSize="25sp"/>
+                android:textSize="20sp"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -76,11 +76,12 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_status_msg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/status_message"
                 android:gravity="center"
-                android:textSize="20sp"/>
+                android:textSize="15sp"/>
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>

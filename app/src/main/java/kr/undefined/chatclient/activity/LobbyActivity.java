@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -106,6 +107,12 @@ public class LobbyActivity extends AppCompatActivity {
 
         btnUserProfileImg.setOnClickListener(view -> {
             it = new Intent(getApplicationContext(), MyPageActivity.class);
+
+            // fixme: uid를 Firebase 객체에서 뽑을 수 있는데 왜 intent로 보내주는 것인지 ?
+            String userId = getIntent().getStringExtra("UID");
+            it.putExtra("UID", userId);
+            // fixme end
+
             startActivity(it);
         });
 
@@ -117,6 +124,8 @@ public class LobbyActivity extends AppCompatActivity {
 
         // 서버 연결
         SocketManager.getInstance().connectToServer();
+
+        loadProfileImage(); // fixme: 코드 위치
     }
 
     /**
@@ -168,6 +177,30 @@ public class LobbyActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // TODO: 읽기 실패 시 예외 처리
                 Log.e(TAG, "[DB Error] " + databaseError.getMessage());
+            }
+        });
+    }
+
+    private void loadProfileImage() {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
+                    if (profileImageUrl != null) {
+                        Glide.with(LobbyActivity.this)
+                                .load(profileImageUrl)
+                                .placeholder(R.drawable.ic_user)
+                                .into(btnUserProfileImg);
+                        btnUserProfileImg.setBackground(null);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
             }
         });
     }

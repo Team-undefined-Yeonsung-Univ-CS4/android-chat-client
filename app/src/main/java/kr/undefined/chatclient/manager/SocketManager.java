@@ -1,7 +1,5 @@
 package kr.undefined.chatclient.manager;
 
-import android.util.Log;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -16,8 +14,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -27,7 +23,7 @@ import kr.undefined.chatclient.activity.LobbyActivity;
 import kr.undefined.chatclient.item.RoomItem;
 
 public class SocketManager {
-    private static final String SERVER_IP = "192.168.219.149";
+    private static final String SERVER_IP = "172.30.1.47";
     private static final int SERVER_PORT = 9998;
 
     private FirebaseUser user;

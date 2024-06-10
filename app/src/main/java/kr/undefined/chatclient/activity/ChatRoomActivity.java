@@ -1,21 +1,28 @@
 package kr.undefined.chatclient.activity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +34,8 @@ import kr.undefined.chatclient.manager.SocketManager;
 import kr.undefined.chatclient.util.DialogManager;
 
 public class ChatRoomActivity extends AppCompatActivity {
+    private FirebaseUser currentUser;
+    private FirebaseAuth auth;
 
     private Toolbar toolbar;
     private TextView tvTitle, tvUserNickname, tvNumOfPeople;
@@ -45,7 +54,9 @@ public class ChatRoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_room);
 
-        Context context = this;
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+
         instance = this;
         uiHandler = new Handler(Looper.getMainLooper());
 
@@ -84,12 +95,14 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         SocketManager.getInstance().setCurrentRoomId(roomId);
 
-        btnUserProfile.setOnClickListener(view -> DialogManager.showMiniProfileDialog(context));
-    }
+        btnUserProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fetchUserInfoAndShowDialog();
+            }
+        });
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+        loadProfileImage();
     }
 
     private void sendMessage() {
@@ -129,4 +142,51 @@ public class ChatRoomActivity extends AppCompatActivity {
         }
         return roomMessages;
     }
+
+    private void loadProfileImage() {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
+                    if (profileImageUrl != null) {
+                        Glide.with(ChatRoomActivity.this)
+                                .load(profileImageUrl)
+                                .placeholder(R.drawable.ic_user)
+                                .into(btnUserProfile);
+                        btnUserProfile.setBackground(null);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+    private void fetchUserInfoAndShowDialog() {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
+                    String nickname = snapshot.child("name").getValue(String.class);
+                    String statusMessage = snapshot.child("statusMsg").getValue(String.class);
+
+                    // 다이얼로그 호출
+                    DialogManager.showMiniProfileDialog(ChatRoomActivity.this, profileImageUrl, nickname, statusMessage);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
 }
