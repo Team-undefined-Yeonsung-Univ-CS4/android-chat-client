@@ -2,10 +2,12 @@ package kr.undefined.chatclient.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +31,11 @@ import kr.undefined.chatclient.manager.SocketManager;
 import kr.undefined.chatclient.util.DialogManager;
 
 public class LobbyActivity extends AppCompatActivity {
+    private static final String TAG = "FirebaseDBCheck";
+
     private FirebaseAuth auth;
     private FirebaseUser user;
+    private DatabaseReference userRef;
 
     private Toolbar toolbar;
     private RecyclerView rvRoomList;
@@ -48,6 +58,9 @@ public class LobbyActivity extends AppCompatActivity {
             it = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(it);
             finish();
+        } else {
+            // 사용자 닉네임 불러오기
+            getUserNickname();
         }
     }
 
@@ -91,9 +104,6 @@ public class LobbyActivity extends AppCompatActivity {
             startActivity(it);
         });
 
-        // TODO: 사용자 닉네임 할당 (기본 값은 이메일 부분이 제외된 ID)
-//        tvUserNickname.setText(currentUser.getEmail());
-
         btnUserProfileImg.setOnClickListener(view -> {
             it = new Intent(getApplicationContext(), MyPageActivity.class);
             startActivity(it);
@@ -134,5 +144,31 @@ public class LobbyActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ChatRoomActivity.class);
         intent.putExtra("roomId", roomId);
         startActivity(intent);
+    }
+
+    /**
+     * 하단 네비게이션 바에 사용자 닉네임을 불러와 할당하는 메서드
+     */
+    private void getUserNickname() {
+        String uid = user.getUid();
+        userRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("name");
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String userName = dataSnapshot.getValue(String.class);
+                    tvUserNickname.setText(userName);
+                } else {
+                    tvUserNickname.setText("(알 수 없음)");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // TODO: 읽기 실패 시 예외 처리
+                Log.e(TAG, "[DB Error] " + databaseError.getMessage());
+            }
+        });
     }
 }
