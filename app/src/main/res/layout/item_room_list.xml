@@ -39,7 +39,7 @@
         android:layout_weight=".7"
         android:layout_marginTop="4dp"
         android:layout_gravity="center"
-        android:src="@drawable/ic_lock_gray"
         android:contentDescription="@string/privated" />
+    <!-- android:src="@drawable/ic_lock_gray" -->
 
 </LinearLayout>
