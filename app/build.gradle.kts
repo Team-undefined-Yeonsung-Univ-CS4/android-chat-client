@@ -36,6 +36,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation( "com.google.gms:google-services:4.4.1")
     implementation("com.google.firebase:firebase-database")
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
     implementation("com.google.firebase:firebase-storage")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     implementation ("com.google.firebase:firebase-storage:20.0.0")
